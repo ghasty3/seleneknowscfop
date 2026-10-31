@@ -27,9 +27,10 @@ características que va pidiendo, poco a poco.
 Numerados para poder referirlos en futuras conversaciones. Todos pedidos explícitamente por la persona.
 
 ### RF-1 · Cubo 3D funcional encima del algoritmo (la pieza estrella)
-La persona (m00009, parafraseada): *"como característica más llamativa, que encima del algoritmo que
+
+La persona (m00009, parafraseada): _"como característica más llamativa, que encima del algoritmo que
 estás intentando aprender haya un cubo 3D funcional haciendo los movimientos del algoritmo para
-mostrártelo"*.
+mostrártelo"_.
 
 - En la ficha de cada algoritmo, **el cubo 3D va arriba y la notación debajo**.
 - El cubo ejecuta el algoritmo **movimiento a movimiento**, con animación de giro real (no saltos de estado).
@@ -39,8 +40,8 @@ mostrártelo"*.
   resuelto, invertir, espejo.
 - Interacción: órbita (arrastrar para girar la cámara), zoom, y girar caras arrastrando sobre el cubo.
 
-**Defectos abiertos pedidos por la persona (m01978, parafraseada):** *"se debe poder rotar visualmente el
-cubo en el visualizador, al girar una cara oculta al inicio, las piezas nuevas no tienen color"*. Dos
+**Defectos abiertos pedidos por la persona (m01978, parafraseada):** _"se debe poder rotar visualmente el
+cubo en el visualizador, al girar una cara oculta al inicio, las piezas nuevas no tienen color"_. Dos
 cosas: (1) que se pueda girar la vista/orientar el cubo en el visor, y (2) que al mover una cara que
 estaba oculta las piezas que aparecen salgan **con color** (hoy salen sin color). El punto 2 tiene su
 caída en el motor: `faceletHome()` (`src/cube/engine.ts:310`) devuelve `''` cuando la matriz `rot` de la
@@ -48,6 +49,7 @@ pieza no alinea ninguno de sus ejes con la dirección de la cara, así que el vi
 color. Es la misma raíz que el defecto de lógica del cubo de m01739.
 
 ### RF-2 · Reproducir el algoritmo desde su caso
+
 Consecuencia técnica de RF-1: para que el cubo "muestre" el caso, el estado inicial tiene que ser el
 estado del caso.
 **Decisión de diseño:** `estadoDelCaso = aplicar inverso(algoritmo) al cubo resuelto`.
@@ -55,37 +57,45 @@ Es matemáticamente garantizado: si `algoritmo(estadoCaso) = resuelto`, entonces
 `estadoCaso = inverso(algoritmo)(resuelto)`. Válido para Cross, F2L, OLL y PLL, y para cualquier
 algoritmo (incluidas variantes y algoritmos con setup).
 Fases visibles en el reproductor:
+
 1. **Preparación** (opcional, lenta y atenuada): cubo resuelto → `inverso(algoritmo)` → estado del caso.
 2. **Algoritmo**: estado del caso → cubo resuelto. Esta es la parte que se estudia.
 3. Botón **"Ver caso"**: salta directamente a la fase 2 (cubo plantado en el caso, listo para ejecutar).
 
 ### RF-3 · Notación interactiva
+
 Recurso (m00036): tabla de notación de GANCUBE con `R r L l U u D d F f B b S M E R2 R' R'2 x y z` y la
 leyenda de dedos:
+
 - **Letra en mayúscula** = giro 90° horario. **Letra en minúscula** = gira 2 capas. **Apostrofo** =
   antihorario. **2** = 180°.
 - **Azul** = índice izquierdo · **Rojo** = pulgar derecho · **Naranja** = medio/anular/meñique.
-Implementación: cada símbolo es una tarjeta clicable que **anima ese movimiento en un cubo 3D** (mismo
-motor que RF-1), con la flecha de eje y el color del dedo. Explicación del eje y de la capa afectada en
-texto.
+  Implementación: cada símbolo es una tarjeta clicable que **anima ese movimiento en un cubo 3D** (mismo
+  motor que RF-1), con la flecha de eje y el color del dedo. Explicación del eje y de la capa afectada en
+  texto.
 
 ### RF-4 · Secciones del método (estructura de la guía de GANCUBE)
+
 Estructura extraída de la página de GANCUBE: **Notación → Cross → F2L → OLL → PLL**, con la definición:
 CFOP = Cross, F2L (primeras dos capas), OLL (orientar última capa), PLL (permutar última capa). Incluye
-los consejos ("tips") de la guía, p. ej. *"si la arista blanca ya está en su posición objetivo, gira la
-cara superior para crear hueco"*.
+los consejos ("tips") de la guía, p. ej. _"si la arista blanca ya está en su posición objetivo, gira la
+cara superior para crear hueco"_.
 
 ### RF-5 · F2L: los 21 casos de la tabla
+
 Recurso: imagen con los 21 casos y sus algoritmos (transcritos en `docs/fuentes.md`, sección F2L).
 Nombres y números: `01 Ua, 02 Ub, 03 H, 04 Z, 05 Aa, 06 Ab, 07 E, 08 T, 09 F, 10 V, 11 Y, 12 Ja, 13 Jb,
 14 Rb, 15 Ra, 16 Gc, 17 Gd, 18 Ga, 19 Gb, 20 Nb, 21 Na`.
+
 - Cada caso: diagrama de la vista superior + algoritmo(s) + cubo 3D (RF-1).
 - Grupo pedagógico "intuitivo" tomado de speedcube.quest (RF-9).
 
 ### RF-6 · OLL 57 casos y clasificación 2-Look
+
 Recurso (m00030): imagen con los 57 OLL de GANCUBE. Solicitud (m00030, parafraseada): **separar los OLL
 en los que se pueden resolver con 2-Look OLL (cruz amarilla)**, y **añadir los 57 al final**.
 Traducción a requisitos:
+
 - Grupo A **"2-Look"** = los casos que se resuelven con el método de dos miradas: **paso 1** cruz
   amarilla (3 patrones: punto, "L"/90°, barra/180° con `F R U R' U' F'` y sus variantes) + **paso 2**
   orientar esquinas (`R U R' U' R U' R'` Sune / Antisune y setups).
@@ -102,39 +112,47 @@ Traducción a requisitos:
 - Orden de aprendizaje: primero los 3 de cruz + Sune/Antisune, luego los casos directos.
 
 ### RF-7 · Watchlist de algoritmos en aprendizaje
+
 Recurso (m00064, parafraseada): apartado donde marcar ciertos algoritmos como **"watchlist"** de los que
 estás aprendiendo actualmente.
+
 - Star/chincheta en cada ficha; vista dedicada **"Watchlist"** con solo los marcados, ordenable por etapa
   y por tiempo.
 - Contador en la navegación (nº de algoritmos en watchlist).
 
 ### RF-8 · Barra de progreso por algoritmo con 3 niveles elegidos por la persona
+
 Recurso (m00064): barra de "ya aprendidos", elegida **libremente por la persona**, con **3 barras**:
+
 - **33 %** → ya lo tiene aprendido.
 - **66 %** → ya puede hacer el algoritmo con soltura, de forma automática.
 - **100 %** → sabe todos los fingertricks.
-Implementación: control segmentado de 3 tramos (más estado "sin empezar" = 0). Al tocar un tramo se
-guarda el nivel. Tooltips con las etiquetas de `LEVEL_LABEL`/`LEVEL_HINT` en `src/store/progress.ts`.
+  Implementación: control segmentado de 3 tramos (más estado "sin empezar" = 0). Al tocar un tramo se
+  guarda el nivel. Tooltips con las etiquetas de `LEVEL_LABEL`/`LEVEL_HINT` en `src/store/progress.ts`.
 - Barras agregadas por etapa (Cross / F2L / OLL / PLL) y globales: media de niveles y nº de casos por
   nivel, en la portada y en cada etapa.
 
 ### RF-9 · Guía F2L intuitiva (contenido pedagógico)
+
 Recurso (m00064, mensaje con enlace): `https://speedcube.quest/guides/beginner-f2l`. Sección propia con
 el enfoque de la guía (extraído, en `docs/fuentes.md`):
+
 - F2L = introducir par esquina+arista a la vez, 4 pares.
 - **Las dos inserciones básicas** (base de la intuición, sin memorizar cadenas):
   - Par emparejado (colores de la U coinciden): `U R U' R'` y su espejo `U' L' U L`.
   - Par separado (colores de la U difieren, la arista a un paso de la esquina): `R U R'` y espejo `L' U' L`.
   - Explicación en 4 pasos: apartar el par del hueco → abrir el hueco → meter el par en el hueco abierto
     → cerrar el hueco.
-- Secciones: *Qué es F2L* · *Inserciones básicas* · *Preparar el par* · *Sacar una pieza del hueco* ·
-  *Piezas separadas arriba (mismo color / colores distintos / blanco arriba)* · *Piezas mal unidas arriba
-  (split)* · *Resolución completa guiada* (cada par se resuelve con el hueco frontal-derecha, rotando el cubo).
+- Secciones: _Qué es F2L_ · _Inserciones básicas_ · _Preparar el par_ · _Sacar una pieza del hueco_ ·
+  _Piezas separadas arriba (mismo color / colores distintos / blanco arriba)_ · _Piezas mal unidas arriba
+  (split)_ · _Resolución completa guiada_ (cada par se resuelve con el hueco frontal-derecha, rotando el cubo).
 - Idea clave a transmitir: **no memorizar algoritmos como cadenas**, leer la descripción y entender el concepto.
 
 ### RF-10 · Cronómetro por algoritmo
+
 Recurso (m00069, parafraseada): temporizador básico **debajo de cada algoritmo** para cronometrarse al
 ejecutarlo y ver progreso.
+
 - Debajo del cubo 3D: Start/Stop (tecla **Espacio**), lectura grande `segundos.centésimas`, auto-reset
   tras grabar, botón borrar.
 - Al parar se **registra** el tiempo en el almacén del caso (lista de tiempos + mejor + media + nº de intentos).
@@ -143,7 +161,9 @@ ejecutarlo y ver progreso.
   últimos tiempos.
 
 ### RF-11 · Apartado "Tus mejores permutaciones"
+
 Recurso (m00069): apartado separado con **tus mejores permutaciones ordenadas de menor a mayor tiempo**.
+
 - Vista **"Ranking"**: todas las permutaciones/algoritmos con tiempo registrado, **ordenadas por mejor
   tiempo de menor a mayor**.
 - Columnas: puesto, nombre (etapa + código, p. ej. `F2L 05 · Aa`), mejor tiempo, media, nº de intentos,
@@ -152,6 +172,7 @@ Recurso (m00069): apartado separado con **tus mejores permutaciones ordenadas de
 - Términos en español para el usuario: "mejores permutaciones", "mejor tiempo", "media", "intentos".
 
 ### RF-12 · Publicación en GitHub
+
 - Repositorio git con `README.md` + `project.md`.
 - **GitHub Pages** con GitHub Actions (build → desplegar `dist/`).
 - **Requisito técnico:** `vite.config.ts` debe fijar `base` según la ruta del repo (`/NOMBRE/`), vía
@@ -164,6 +185,7 @@ Recurso (m00069): apartado separado con **tus mejores permutaciones ordenadas de
 La persona (m00001, parafraseada): **estilo minimalista en modo oscuro con acentos morados oscuros**.
 
 Tokens propuestos (`src/styles/global.css`):
+
 ```
 --bg: #0a0810        /* fondo principal, casi negro con tinte violeta */
 --bg-2: #120e1c      /* degradado superior */
@@ -177,6 +199,7 @@ Tokens propuestos (`src/styles/global.css`):
 --accent-dim: #4a2f7a
 --good: #34b27a  --warn: #e9a24b  --bad: #de4a44
 ```
+
 - Tipografía: Inter/`system-ui` para texto; `ui-monospace`/JetBrains Mono para **algoritmos** (los
   símbolos de giro se leen mejor en monoespaciada).
 - Minimalismo: poco texto por pantalla, mucho aire, bordes de 1 px, sin sombras gordas, sin emojis
@@ -192,16 +215,16 @@ Tokens propuestos (`src/styles/global.css`):
 
 ## 4. Stack técnico y decisiones
 
-| Elección | Decisión | Motivo |
-|---|---|---|
-| Build | **Vite 5 + React 18 + TypeScript** | estático para Pages, HMR rápido, sin backend |
-| 3D | **three.js + @react-three/fiber 8** (+ @react-three/drei para `OrbitControls`) | control imperativo del cubo, animación por frame |
-| Enrutado | navegación propia con estado (`useState` + hash `#/f2l/05`) | evitar dependencia extra; URLs compartibles con amigos |
-| Estado | **`localStorage` + `useSyncExternalStore`** (módulo singleton) | sin backend, sin librerías de estado; persistencia inmediata |
-| Diagramas | **SVG generados desde el estado cúbico** (no imágenes de GANCUBE) | evita dependencias de imágenes externas, siempre coherente con el 3D, escalable a cualquier caso |
-| Algoritmos | **tablas transcritas de las imágenes + verificación/generación por BFS** (ver §7) | las transcripciones de imagen son propensas a error; el solver garantiza que el algoritmo mostrado **sí** resuelve el caso |
-| Idioma UI | español | la persona y sus amigos son hispanohablantes |
-| Versiones fijadas | react 18.3, @react-three/fiber ^8.17, three ^0.171, @react-three/drei ^9.117, vite ^5.4, typescript ^5.6, tsx ^4.19 (scripts) | compatibilidad React 18 ↔ fiber 8 |
+| Elección          | Decisión                                                                                                                      | Motivo                                                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Build             | **Vite 5 + React 18 + TypeScript**                                                                                            | estático para Pages, HMR rápido, sin backend                                                                               |
+| 3D                | **three.js + @react-three/fiber 8** (+ @react-three/drei para `OrbitControls`)                                                | control imperativo del cubo, animación por frame                                                                           |
+| Enrutado          | navegación propia con estado (`useState` + hash `#/f2l/05`)                                                                   | evitar dependencia extra; URLs compartibles con amigos                                                                     |
+| Estado            | **`localStorage` + `useSyncExternalStore`** (módulo singleton)                                                                | sin backend, sin librerías de estado; persistencia inmediata                                                               |
+| Diagramas         | **SVG generados desde el estado cúbico** (no imágenes de GANCUBE)                                                             | evita dependencias de imágenes externas, siempre coherente con el 3D, escalable a cualquier caso                           |
+| Algoritmos        | **tablas transcritas de las imágenes + verificación/generación por BFS** (ver §7)                                             | las transcripciones de imagen son propensas a error; el solver garantiza que el algoritmo mostrado **sí** resuelve el caso |
+| Idioma UI         | español                                                                                                                       | la persona y sus amigos son hispanohablantes                                                                               |
+| Versiones fijadas | react 18.3, @react-three/fiber ^8.17, three ^0.171, @react-three/drei ^9.117, vite ^5.4, typescript ^5.6, tsx ^4.19 (scripts) | compatibilidad React 18 ↔ fiber 8                                                                                          |
 
 Versiones incompatibles a evitar: @react-three/fiber v9 requiere React 19. No mezclar.
 
@@ -249,6 +272,7 @@ Modelo: **26 cubies** (sin núcleo), cada uno con `home` (posición resuelta), `
 `rot` → los colores se mueven solos. Esto hace trivial el render 3D y los diagramas.
 
 Coordenadas y signos (decisión clave, implementada):
+
 - `x` = derecha (cara R), `y` = arriba (cara U), `z` = frente (cara F).
 - Giro horario de una cara = **−90°** sobre su eje.
 - Matrices: ver `mat()` en `src/cube/engine.ts:24` (rotX/rotY/rotZ a ±90°, enteros), derivadas de la
@@ -300,6 +324,7 @@ ningún punto; son trabajo abierto.**
    del hueco). Son la señal del punto 1, no datos malos.
 
 **Pruebas que hay que mantener** (`scripts/verify.mts`, con `tsx`):
+
 1. `(R U R' U')` × 6 = resuelto (sexy move).
 2. `M2 U2 M2 U2 M2 U2 M2` (caso H) = resuelto.
 3. `F R U R' U' F'` × 4 = resuelto; × 2 deja 2 aristas de la U orientadas (barra) → valida la lógica de
@@ -326,7 +351,7 @@ Estas pruebas son la red que impide publicar algoritmos transcritos mal. **No qu
 3. **Generador BFS** (`scripts/gen-*.mts`, con `tsx`): búsqueda en amplitud desde el estado del caso hasta
    resuelto, con conjunto de movimientos estético y coste = nº de movimientos.
 4. Salida → `src/data/oll.ts`, `pll.ts`, `f2l.ts` con `{ id, code, name, algs[], variants, expect,
-   sig, source }`, y **la prueba de que el alg cierra el plantado** (§6.1 punto 6).
+sig, source }`, y **la prueba de que el alg cierra el plantado** (§6.1 punto 6).
 5. Regla de oro: **la interfaz solo muestra algoritmos que han pasado la verificación.** Si un transcrito
    no pasa, se sustituye por el generado por BFS y se anota en `docs/fuentes.md`.
 6. Imágenes oficiales: las láminas de GANCUBE recortadas están en `public/gan/` y se enlazan desde la
@@ -349,7 +374,7 @@ Estas pruebas son la red que impide publicar algoritmos transcritos mal. **No qu
   Secuencia de un movimiento:
   1. `pivot` (Object3D en la raíz, rotación 0); los cubies de las capas del movimiento se **re-parentan**
      al pivot con `Object3D.attach()` (conserva la transformada mundial), con `matrixAutoUpdate=false` y
-     su matriz = estado *antes* del giro.
+     su matriz = estado _antes_ del giro.
   2. `useFrame(dt)`: `pivot.rotation[axis] = ease(animT) * dir * π/2`, con `animT` avanzado por
      `dt * movimientosPorSegundo`.
   3. Al llegar a 1: `applyMove(estado, mov)`, `detach` de vuelta a la raíz, y se fijan las matrices desde
@@ -396,9 +421,17 @@ cronómetro · `M` espejo · `I` invertir. Dejar la lista en un sitio visible de
 ## 10. Niveles, watchlist y tiempos (`src/store/progress.ts`)
 
 Esquema por id (`"f2l:05"`, `"oll:17"`, `"pll:03"`, `"cross:04"`, `"notation:R"`):
+
 ```ts
-interface ProgressEntry { level: 0|33|66|100; watched: boolean; times: number[]; best: number; updatedAt: number }
+interface ProgressEntry {
+  level: 0 | 33 | 66 | 100;
+  watched: boolean;
+  times: number[];
+  best: number;
+  updatedAt: number;
+}
 ```
+
 - Claves localStorage: `cubo.cfop.progress.v2` (con migración automática desde `cubo.cfop.progress.v1`).
 - API: `setLevel`, `toggleWatch`, `setWatch`, `recordTime(id, ms)` (guarda hasta 40 tiempos, calcula
   `best`), `clearTimes`, `resetAll`, `get`.
@@ -419,7 +452,7 @@ interface ProgressEntry { level: 0|33|66|100; watched: boolean; times: number[];
 - **Cross**: explicación (cruz blanca en la D, lógica "blanco arriba / blanco al frente", hueco),
   casos/atajos, práctica, consejos de GANCUBE.
 - **F2L** (RF-5/RF-9): guía intuitiva (inserciones básicas `U R U' R'` / `U' L' U L` / `R U R'` / `L' U' L`)
-  + los 21 casos con filtros (emparejado/separado/mal unido) y niveles.
+  - los 21 casos con filtros (emparejado/separado/mal unido) y niveles.
 - **OLL** (RF-6): pestañas **2-Look (empezar aquí)** y **Todos los 57**, sub-grupos por patrón (punto /
   L / barra / cruz hecha), niveles, cronómetro.
 - **PLL**: los 21 casos (T, Ua/Ub, Za/Zb, H, G1-G6, J1/J2, R, F, A1/A2, E, N1/N2, V, Y) con sub-grupo
@@ -467,6 +500,39 @@ que consume el estado cúbico (visor 3D, diagramas, patrones, `isSolved`) arrast
 
 Cada fase termina con `npm run typecheck` y `npm run build` en verde.
 
+### 13.1 Cadena de defectos de la vista canónica (auditoría de la fase 0)
+
+Medido sobre el plantado de `Ua` (`src/data/pll.ts`, alg `R U' R U R U R U' R' U' R2`), que es el
+caso más simple de todos. Comprobado con sondas desechables (borradas tras medir):
+
+1. **Convención de casa**: en `solvedState()` (`src/cube/engine.ts:58`) las 8 piezas de la última
+   capa tienen `home[1] === +1` y la cruz + F2L tienen `home[1] === -1`.
+2. **`llLayerIsTop` era trivialmente verdadera** (`src/cube/caseUtils.ts:107`): comparaba claves de
+   POSICIÓN contra las 8 claves de la anilla, y las 8 posiciones de arriba coinciden siempre con
+   esas claves → devolvía `true` para cualquier giro. Arreglada comparando IDENTIDADES por firma de
+   color; con eso da `false` en crudo y en las 24 rotaciones, que es lo correcto aquí.
+3. **`canonicalizeState`** (`src/cube/caseUtils.ts:395`) recorre las 24 palabras de `ROT_WORDS`
+   pidiendo `f2lSolvedRel(state2)`. La comprobación de posición de `f2lSolvedRel` quiere
+   `posición = marco·casa`, pero el marco que sale de `frameMatrix` (`src/cube/engine.ts:91`, que
+   guarda las matrices POR COLUMNAS) aplicado con `applyVec` fila-major devuelve la transpuesta: la
+   cuenta queda invertida. Medido sobre las 7 palabras de control: 7 de 12 piezas F2L cuadran en
+   crudo (`F = I`) y sólo 4 con `x` — ninguna rotación pasa. Por eso `canonicalView` devuelve siempre
+   `rot: ''` y cae al plantado crudo, que es el estado honesto (plantado + alg = resuelto).
+4. **Consecuencia visible**: en el plantado crudo la última capa está abajo, así que `permOf` sobre
+   el anillo de arriba mide la capa blanca → `[ -1, -1, 2, 3 ]` en esquinas y `[ 0, 3, -1, 2 ]` en
+   aristas, y las flechas de PLL salían sin esquinas. La lámina ya NO depende de ese anillo: los
+   recuadros y las flechas se dibujan por COLOR del sticker (`CaseDiagram.stickerColor`, rotación de
+   la pieza = permutación de sus colores), que sí es correcto, como se ve en las capturas.
+5. **Sondeo añadido**: `f2lSolvedHere` (`src/cube/caseUtils.ts:112`) mide «dos primeras capas
+   resueltas en estas coordenadas» excluyendo por identidad de pieza, para que la auditura no
+   dependa
+   de la exclusión por capa de arriba de `f2lSolved`.
+
+**Falta**: fijar UNA convención de matriz (columnas de `frameMatrix` vs helpers fila-major) con un
+test único, y entonces la vista canónica + el anillo por posición + `f2lSolvedRel` +
+`canonicalByFrame`. Los verificadores siguen en verde: `casos verificados: 73 de 111`,
+`Avisos de prerrequisito: 38`, 0 fallos, `tsc` limpio, `✓ built in 747ms`.
+
 ---
 
 ## 14. Estado
@@ -490,6 +556,7 @@ centros fallaban 20 fichas (`look2` y PLL), así que quedó revertida a la versi
 el progreso se comparta entre dispositivos (hoy: no, por ser estático); idioma extra (inglés).
 
 **Open objectives (abiertos):**
+
 - Arreglar la lógica del cubo señalada en m01739 (convención de matrices/rotaciones, ver §6.1).
 - Que se pueda girar visualmente el cubo en el visor y que las piezas que aparecen al girar una cara
   oculta salgan con color (m01978, §8).

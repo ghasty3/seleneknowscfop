@@ -815,20 +815,48 @@ input[type="range"] { accent-color: var(--accent-strong); }
 .stage-progress { display: grid; gap: 6px; }
 .progress { height: 6px; border-radius: 3px; background: var(--surface-2); box-shadow: var(--hairline); overflow: hidden; }
 .progress-bar { height: 100%; background: var(--accent); border-radius: 3px; }
-.levelbar { display: inline-flex; gap: 3px; }
-.lvl { width: 16px; height: 4px; border-radius: 2px; background: var(--surface-2); box-shadow: var(--hairline); }
-.lvl-1 { background: var(--accent-dim); }
-.lvl-2 { background: var(--accent); }
-.lvl-3 { background: var(--accent-strong); }
-.lvl-4 { background: var(--ok); }
+.levelbar { display: flex; gap: 3px; }
+/* LevelBar (Controls.tsx) usa .lvl con etiquetas de texto y clases .lvl-33/66/100. Sin
+   reglas propias cada botón caía en el reset global (ancho de 4 píxeles de la minidieta) y
+   las tres etiquetas se apilaban una encima de otra. */
+.lvl {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.lvl:hover { color: var(--text); border-color: var(--line-strong); }
+.lvl.on {
+  background: linear-gradient(120deg, var(--accent-dim), var(--accent));
+  border-color: var(--accent);
+  color: #f1ecff;
+}
+.lvl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.levelbar.compact .lvl { flex: 0 0 auto; padding: 4px 8px; font-size: 11px; font-family: var(--mono); }
 .star { padding: 0; width: 34px; min-height: 34px; border-radius: var(--radius-sm); background: transparent; box-shadow: none; color: var(--dim); }
 .star svg { width: 17px; height: 17px; }
 .star.on { color: var(--warn); }
 
 /* --- diagrama 2D --- */
-.diagram { display: grid; gap: 2px; padding: 6px; border-radius: var(--radius-sm); background: var(--bg-2); box-shadow: var(--hairline); }
-.dcell { border-radius: 2px; }
+/* Diagrama cenital de la última capa. El svg NO puede ser un item de grid: si no, el
+   contenedor lo estira y la altura declarada deja de coincidir con el viewBox, recortando
+   las flechas de permutación por arriba y por abajo. */
+.diagram { display: block; margin: 0 auto; }
+.dcell { stroke: rgba(0, 0, 0, 0.35); stroke-width: 1; }
 .mk-corner, .mk-edge, .mk-target, .mk-home { pointer-events: none; }
+.mk-target { fill: none; stroke: var(--accent-strong); stroke-width: 2; stroke-dasharray: 5 3; }
+.mk-corner { fill: none; stroke: #fff; stroke-width: 2; }
+.mk-edge { fill: none; stroke: var(--accent-strong); stroke-width: 2; }
+.mk-home { fill: none; stroke: var(--warn); stroke-width: 2; }
+.mk-target path { fill: var(--accent-strong); stroke: none; }
 
 /* --- entrenador / tiempos --- */
 .trainer { display: grid; gap: 12px; }

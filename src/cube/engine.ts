@@ -118,29 +118,20 @@ export function transpose(m: Mat): Mat {
  * su inversa vuelve a la identidad, y un cubo resuelto agarrado girado sigue siendo resuelto.
  */
 export function isSolved(s: CubeState): boolean {
-  // «Resuelto» se mide contra los centros, que son el marco físico del cubo: si el cubo está
-  // resuelto pero agarrado con una rotación de cubo completo (`x`, `y`, `z`), los centros giran
-  // con él y cada pieza debe llevar la MISMA rotación global que llevan los centros. Comparar
-  // contra la identidad a secas hacía que un cubo resuelto con preparación escrita (`x R U2 R'…`)
-  // nunca se marcara como resuelto — ese era el fallo de lógica del cubo que se veía en el
-  // reproduccor: el paso final se marcaba pero el cubo seguía desordenado.
-  const F = frameMatrix(s) ?? I
-  return s.cubies.every((c) => {
-    // El modelo guarda las matrices por COLUMNAS y `apply3` aplica la transpuesta, así que
-    // apply3(transpose(F), pos) = F·pos en espacio de posiciones.
-    const p = apply3(transpose(F), c.pos)
+  // El marco lo marcan los centros: `F` es la rotación de cubo completo que llevan agarrada
+  // las piezas centrales. `G = F⁻¹` la deshace, y «resuelto» es quedarse en casa y sin giro
+  // DESPUÉS de deshacer el marco: G·posición = casa y G·rotación = identidad. Comprobar
+  // contra la identidad a secas (sin los centros) hacía que un cubo resuelto agarrado con su
+  // preparación escrita (`x R U2 R'…`, `y U2 R U R' U'`) nunca contara como resuelto: ese era
+  // el fallo de lógica que se veía en el reproduccor, el último paso marcado y el cubo suelto.
+  const G = transpose(frameMatrix(s) ?? I)
+  for (const c of s.cubies) {
+    const p = applyVec(G, c.pos)
     if (p[0] !== c.home[0] || p[1] !== c.home[1] || p[2] !== c.home[2]) return false
-    // Con el marco girado F la rotación de cada pieza es su rotación nativa recableada por el
-    // marco: rot = M_home·F⁻¹. Con matrices fila-major, col_j(rot) = [rot[j], rot[3+j], rot[6+j]]
-    // y debe valer col_j(rot) = col_j(F) · home[j] (los home son ejes con signo).
-    for (let j = 0; j < 3; j++) {
-      const h = c.home[j]
-      const col = [c.rot[j], c.rot[3 + j], c.rot[6 + j]]
-      const want = [h * F[0], h * F[1], h * F[2]]
-      if (col[0] !== want[0] || col[1] !== want[1] || col[2] !== want[2]) return false
-    }
-    return true
-  })
+    const r = mul(G, c.rot)
+    for (let i = 0; i < 9; i++) if (r[i] !== I[i]) return false
+  }
+  return true
 }
 
 // ---------- Notación ----------

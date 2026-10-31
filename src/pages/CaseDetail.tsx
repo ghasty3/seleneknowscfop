@@ -4,7 +4,7 @@ import type { StageKey } from '../data/types'
 import { LEVEL_HINT, useProgress } from '../store/progress'
 import { LevelBar, Star } from '../components/Controls'
 import { AlgoPlayer, notationLegend } from '../components/AlgoPlayer'
-import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
+import { CaseDiagram, caseMarkers, modeFor } from '../components/CaseDiagram'
 import { Chevron } from '../components/icons'
 import { canonicalView } from '../cube/caseUtils'
 import { cloneState, parseAlg, applyMoves } from '../cube/engine'
@@ -98,7 +98,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
               ))}
             </ul>
             <div className="center">
-              <CaseDiagram state={state} markers={caseMarkers(def, state)} size={150} label="Diagrama del caso" />
+              <CaseDiagram state={state} markers={caseMarkers(def, state)} mode={modeFor(def)} size={150} label="Diagrama del caso" />
             </div>
             {def.ref && (
               <figure className="ref-fig">

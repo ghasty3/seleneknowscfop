@@ -1,7 +1,7 @@
 import { STAGES, STAGE_ORDER, caseRefs } from '../data/stages'
 import type { StageKey } from '../data/types'
 import { StageProgress } from '../components/Controls'
-import { CaseDiagram } from '../components/CaseDiagram'
+import { CaseDiagram, modeFor } from '../components/CaseDiagram'
 import { caseState, isSolved, solvedState, applyMoves, parseAlg, cloneState } from '../cube/engine'
 
 const GUIDE: Record<StageKey, { goal: string; steps: string[]; why: string; mistake: string; algDemo: string }> = {
@@ -102,7 +102,7 @@ export default function Method() {
                 <StageProgress stage={k} />
               </div>
               <div className="panel center">
-                <CaseDiagram state={st} size={168} label={`Estado inicial de ${demo.def.name}`} />
+                <CaseDiagram state={st} mode={modeFor(demo.def)} size={168} label={`Estado inicial de ${demo.def.name}`} />
                 <p className="hint">
                   Ejemplo: <code className="alg">{demo.def.algs[0]}</code>
                 </p>

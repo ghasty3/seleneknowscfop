@@ -96,6 +96,22 @@ function countNonZero(p: Pos): number {
   return p.filter((v) => v !== 0).length
 }
 
+/**
+ * ¿Están las dos primeras capas resueltas EN ESTAS COORDENADAS? Excluye por IDENTIDAD de
+ * pieza (las de la última capa, casa y = -1), no por posición: la versión de arriba excluye la
+ * capa de arriba, así que con la última capa abajo (plantado con preparación escrita) contaba
+ * las piezas revueltas de la última capa como F2L y devolvía false en las 24 rotaciones.
+ */
+export function f2lSolvedHere(s: CubeState): boolean {
+  for (const c of s.cubies) {
+    if (countNonZero(c.pos) === 1) continue // centros
+    if (c.home[1] === -1) continue // piezas de la última capa (color opuesto a la cruz)
+    if (key(c.pos) !== key(c.home)) return false
+    if (!isIdentityRot(c.rot)) return false
+  }
+  return true
+}
+
 /** Piezas de las dos primeras capas (todo lo que no es capa U ni centros). */
 export function f2lSolved(s: CubeState): boolean {
   for (const c of s.cubies) {
@@ -111,6 +127,29 @@ export function f2lSolved(s: CubeState): boolean {
 
 export function crossSolved(s: CubeState): boolean {
   return CROSS_EDGES.every((p) => pieceAtHome(s, p))
+}
+
+/**
+ * ¿Está la última capa arriba? Es una comprobación ESTRUCTURAL, no de colores: las piezas
+ * propias de la última capa son las 8 que no son de F2L, y la vista es canónica cuando esas 8
+ * son exactamente las que están en la capa de arriba. `f2lSolvedRel` no sirve para esto: su
+ * heurística llama «última capa» a la capa superior por convención de colores, y un plantado
+ * con preparación (`x'`) la tiene abajo, por eso `canonicalView` nunca encontraba el giro.
+ */
+export function llLayerIsTop(s: CubeState): boolean {
+  // Identidades de las piezas de la última capa: por FIRMAS DE COLOR, no por posición. Comparar
+  // claves de posición era trivialmente verdadero (las 8 posiciones de arriba coinciden siempre
+  // con las 8 claves de la anilla), así que devolvía `true` para cualquier rotación.
+  // La última capa es la del color OPUSTO al de la cruz: en este modelo la cruz blanca está en
+  // casa con y = +1, así que las piezas de la última capa son las que tienen casa con y = -1.
+  const llKeys = new Set<string>()
+  for (const c of solvedState().cubies) {
+    if (countNonZero(c.home) < 2) continue
+    if (c.home[1] !== -1) continue
+    llKeys.add(cubieIdentity(c).colors.slice().sort().join(''))
+  }
+  const top = s.cubies.filter((c) => countNonZero(c.pos) > 1 && c.pos[1] === 1)
+  return top.length === 8 && top.every((c) => llKeys.has(cubieIdentity(c).colors.slice().sort().join('')))
 }
 
 /** Orientación: el sticker del color de la cara `face` está en esa cara. */
@@ -331,6 +370,16 @@ export function canonicalByFrame(base: CubeState): { state: CubeState; rot: stri
 }
 
 /** Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún marco. */
+/**
+ * Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún
+ * marco. Mide SOLO contra los centros (`f2lSolvedRel`): en un 3x3 los centros son el marco, así
+ * que una preparación escrita `x`/`y` es el mismo cubo agarrado de otra forma. No se pide que la
+ * última capa quede «arriba» en coordenadas: en este modelo la última capa vive en casa con y = +1
+ * y la cruz con y = -1, y una rotación del cubo entero nunca pone las piezas de la cruz y su casa
+ * a la vez en la misma coordenada, así que ese filtro adicional hacían imposible la vista canónica.
+ * LL_COLOR y el anillo de la lámina se detectan por la pieza que toca el centro amarillo, no por la
+ * posición de la anilla (ver `CaseDiagram.llRing`), que era trivialmente verdadera para cualquier giro.
+ */
 export function canonicalizeState(base: CubeState): { state: CubeState; rot: string } {
   const { state, rot } = canonicalByFrame(base)
   if (rot && f2lSolvedRel(state)) return { state, rot }
@@ -539,7 +588,11 @@ export function f2lSolvedRel(s: CubeState): boolean {
  */
 export function canonicalView(alg: string): { state: CubeState; play: string; rot: string } {
   const base = caseState(alg)
-  const { state, rot } = canonicalByFrame(base)
+  // canonicalByFrame solo normaliza al marco de los centros (siempre devuelve rot=""), así que
+  // nunca devolvía la rotación que pone la última capa arriba: las flechas de PLL se quedaban
+  // sin esquinas. canonicalizeState sí busca el giro donde la cruz y las dos primeras capas
+  // quedan resueltas y la última capa arriba. (canonicalByFrame se usa en checkStructure.)
+  const { state, rot } = canonicalizeState(base)
   if (rot) {
     const back = algToString(invertMoves(parseAlg(rot)))
     const play = [alg, back].filter(Boolean).join(' ')

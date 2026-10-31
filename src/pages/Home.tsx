@@ -2,7 +2,7 @@ import { STAGES, STAGE_ORDER, caseRefs } from '../data/stages'
 import { LOOK2 } from '../data/look2'
 import { useAllProgress } from '../store/progress'
 import { StageProgress } from '../components/Controls'
-import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
+import { CaseDiagram, caseMarkers, modeFor } from '../components/CaseDiagram'
 import { caseState } from '../cube/engine'
 
 export function NotFound() {
@@ -83,7 +83,7 @@ export default function Home() {
             const st = caseState(c.algs[0])
             return (
               <a key={c.code} className="card case-card" href={`#/oll/${c.code}`}>
-                <CaseDiagram state={st} markers={caseMarkers(c, st)} size={104} />
+                <CaseDiagram state={st} markers={caseMarkers(c, st)} mode={modeFor(c)} size={104} />
                 <div className="case-meta">
                   <h3>{c.name}</h3>
                   <code className="alg">{c.algs[0]}</code>
@@ -121,7 +121,7 @@ export default function Home() {
               const st = caseState(r.def.algs[0])
               return (
                 <a key={r.id} className="card case-card" href={`#/${r.stage}/${r.code}`}>
-                  <CaseDiagram state={st} markers={caseMarkers(r.def, st)} size={104} />
+                  <CaseDiagram state={st} markers={caseMarkers(r.def, st)} mode={modeFor(r.def)} size={104} />
                   <div className="case-meta">
                     <h3>{r.def.name}</h3>
                     <code className="alg">{r.def.algs[0]}</code>

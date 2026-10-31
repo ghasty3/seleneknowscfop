@@ -3,7 +3,7 @@ import { STAGES, caseRefs, type CaseRef } from '../data/stages'
 import type { CaseDef, StageKey } from '../data/types'
 import { useAllProgress, progress } from '../store/progress'
 import { LevelBar, Star, StageProgress } from '../components/Controls'
-import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
+import { CaseDiagram, caseMarkers, modeFor } from '../components/CaseDiagram'
 import { caseState } from '../cube/engine'
 import { canonicalView, EDGE_SHAPE_LABEL, PERM_LABEL, ollPattern, pllPattern } from '../cube/caseUtils'
 
@@ -27,7 +27,7 @@ export function CaseCard({ r }: { r: CaseRef }) {
   return (
     <article className="card case-card">
       <a className="case-link" href={`#/${r.stage}/${r.code}`}>
-        <CaseDiagram state={st} markers={caseMarkers(r.def, st)} size={96} label={`Estado inicial de ${r.def.name}`} />
+        <CaseDiagram state={st} markers={caseMarkers(r.def, st)} mode={modeFor(r.def)} size={96} label={`Estado inicial de ${r.def.name}`} />
         <div className="case-meta">
           <h3>{r.def.name}</h3>
           <code className="alg">{r.def.algs[0]}</code>
