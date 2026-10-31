@@ -1,0 +1,143 @@
+import { mirrorAlg } from '../cube/engine'
+import type { CaseDef } from './types'
+
+const JA = "x' R2 U' R' U R2 U2 r U' R' U2 r' U R2"
+
+/**
+ * PLL v1: 15 casos con firma de permutación declarada (`sig`), que `verify.mts`
+ * comprueba contra el estado plantado. `swap2o` = dos cambios opuestos,
+ * `swap2a` = dos cambios adyacentes, `adj` = un cambio adyacentes, `diag` =
+ * cambio diagonal, `cycle3`/`cycle4` = ciclos de 3/4 piezas.
+ */
+export const PLL: CaseDef[] = [
+  {
+    code: 'T',
+    name: 'T · permuta T',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Dos piezas vecinas de cada tipo se intercambian.',
+    sig: { corners: 'adj', edges: 'adj' },
+    algs: ["R U R' U' R U' R' F' R U R' U' R' F R2 U' R'"],
+  },
+  {
+    code: 'Ua',
+    name: 'Ua · ciclo de aristas',
+    expect: 'pll',
+    group: 'solo aristas',
+    short: 'Las 4 aristas de la U giran en círculo. Las esquinas ya están.',
+    sig: { corners: 'id', edges: 'cycle4' },
+    algs: ["R U' R U R U R U' R' U' R2"],
+  },
+  {
+    code: 'Ub',
+    name: 'Ub · ciclo de aristas',
+    expect: 'pll',
+    group: 'solo aristas',
+    short: 'El ciclo de aristas en el sentido contrario.',
+    sig: { corners: 'id', edges: 'cycle4' },
+    algs: ["R2 U R U R' U' R' U' R' U R'"],
+  },
+  {
+    code: 'Z',
+    name: 'Z · permuta Z',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Dos cambios diagonales: esquinas y aristas se cruzan.',
+    sig: { corners: 'diag', edges: 'diag' },
+    algs: ["x' U R' U' R' F R2 U' R' U' R U R' F'"],
+  },
+  {
+    code: 'H',
+    name: 'H · permuta H',
+    expect: 'pll',
+    group: 'solo aristas',
+    short: 'Dos pares de aristas opuestos se intercambian. Solo cortes M.',
+    sig: { corners: 'id', edges: 'swap2o' },
+    algs: ['M2 U M2 U2 M2 U M2'],
+  },
+  {
+    code: 'V',
+    name: 'V · permuta V',
+    expect: 'pll',
+    group: 'solo aristas',
+    short: 'Dos pares de aristas vecinas se intercambian.',
+    sig: { corners: 'id', edges: 'swap2a' },
+    algs: ["R' U R' U' R' F' R2 U' R' U' R' F R2 U2 R'"],
+  },
+  {
+    code: 'Ja',
+    name: 'Ja · permuta J',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Dos esquinas vecinas se intercambian y tres aristas giran en ciclo.',
+    sig: { corners: 'adj', edges: 'cycle3' },
+    algs: [JA],
+  },
+  {
+    code: 'Jb',
+    name: 'Jb · permuta J',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Espejo de Ja: se genera invirtiendo el eje x del algoritmo.',
+    sig: { corners: 'adj', edges: 'cycle3' },
+    algs: [mirrorAlg(JA)],
+    mirrorOf: { stage: 'pll', code: 'Ja' },
+  },
+  {
+    code: 'Ga',
+    name: 'Ga · permuta G',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Una esquina en su sitio, las otras tres en ciclo con las aristas.',
+    algs: ["R2 U R' U' R' F' R2 U' R' F R U' R'"],
+  },
+  {
+    code: 'Gb',
+    name: 'Gb · permuta G',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Variante G con el «faros» en la cara frontal.',
+    algs: ["R U' R' F' R U R U' R' F' R2 U' R'"],
+  },
+  {
+    code: 'R',
+    name: 'R · permuta R',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Esquinas y aristas en ciclo de tres, con la cabeza a la derecha.',
+    algs: ["R U R' U' R' F R2 U' R' U' R U R' F'"],
+  },
+  {
+    code: 'Y',
+    name: 'Y · permuta Y',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Dos ciclos de tres entrelazados.',
+    algs: ["F R U' R' U' R U R' F' R U R' U' R' F R F'"],
+  },
+  {
+    code: 'E',
+    name: 'E · permuta E',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Diagonales cruzadas: dos cambios en esquinas y dos en aristas.',
+    algs: ["x' M' U M U2 M' U M U2 M' U' M"],
+  },
+  {
+    code: 'N1',
+    name: 'N1 · permuta N',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Intercambio de dos esquinas y dos aristas con la cara de los faros detrás.',
+    algs: ["r U R' U' M' U R U' r'"],
+  },
+  {
+    code: 'N2',
+    name: 'N2 · permuta N',
+    expect: 'pll',
+    group: 'esquinas + aristas',
+    short: 'Espejo de N1.',
+    algs: [mirrorAlg("r U R' U' M' U R U' r'")],
+    mirrorOf: { stage: 'pll', code: 'N1' },
+  },
+]

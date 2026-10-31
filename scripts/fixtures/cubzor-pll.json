@@ -1,0 +1,23 @@
+[
+  { "code": "Ua", "alg": "R U' R U R U R U' R' U' R2" },
+  { "code": "Ub", "alg": "R2 U R U R' U' R' U' R' U R'" },
+  { "code": "H", "alg": "M2 U M2 U2 M2 U M2" },
+  { "code": "Z", "alg": "M' U M2 U M2 U M' U2 M2" },
+  { "code": "T", "alg": "R U R' U' R' F R2 U' R' U' R U R' F'" },
+  { "code": "Ja", "alg": "R' U L' U2 R U' R' U2 R L" },
+  { "code": "Jb", "alg": "R U R' F' R U R' U' R' F R2 U' R'" },
+  { "code": "Ra", "alg": "R U R' F' R U2 R' U2 R' F R U R U2 R'" },
+  { "code": "Rb", "alg": "R' U2 R U2 R' F R U R' U' R' F' R2" },
+  { "code": "F", "alg": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R" },
+  { "code": "Ga", "alg": "R2 U R' U R' U' R U' R2 D U' R' U R D'" },
+  { "code": "Gb", "alg": "R' U' R U D' R2 U R' U R U' R U' R2 D" },
+  { "code": "Gc", "alg": "R2 U' R U' R U R' U R2 D' U R U' R' D" },
+  { "code": "Gd", "alg": "R U R' U' D R2 U' R U' R' U R' U R2 D'" },
+  { "code": "Aa", "alg": "x R' U R' D2 R U' R' D2 R2 x'" },
+  { "code": "Ab", "alg": "x R2 D2 R U R' D2 R U' R x'" },
+  { "code": "E", "alg": "x' R U' R' D R U R' D' R U R' D R U' R' D' x" },
+  { "code": "Y", "alg": "F R U' R' U' R U R' F' R U R' U' R' F R F'" },
+  { "code": "V", "alg": "R' U R' U' y R' F' R2 U' R' U R' F R F" },
+  { "code": "Na", "alg": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'" },
+  { "code": "Nb", "alg": "R' U R U' R' F' U' F R U R' F R' F' R U' R" }
+]
