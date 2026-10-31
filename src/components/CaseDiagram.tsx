@@ -180,13 +180,11 @@ export function CaseDiagram({
           ? FACE_HEX.U
           : UNORIENTED
     else if (pll) {
-      // En un PLL la capa entera está orientada: el amarillo no informa nada. Se pinta con el
-      // color lateral la casilla de cada pieza que NO está en su sitio (como ruwix/Peety): en Ub
-      // salen las tres casillas rojas y en una T las cuatro esquinas, y se ve de un golpe qué
-      // piezas hay que mover.
+      // Cara de arriba SIEMPRE amarilla en PLL (decisión del proyecto): un PLL permuta la última
+      // capa y no la tuerce, así que todas sus pegatinas de arriba son amarillas y el amarillo no
+      // informa nada. Quién está movido lo dicen las cuatro franjas de los lados (pegatinas reales
+      // de esas piezas) y las flechas del ciclo.
       fill = ORIENTED
-      const side = ci !== undefined && cPerm && cPerm[ci] !== ci ? SIDE_CORNER[ci] : ei !== undefined && ePerm && ePerm[ei] !== ei ? SIDE_EDGE[ei] : null
-      if (side) fill = COLORS[faceletHome(state, side[0], side[1], side[2])] ?? UNORIENTED
     } else {
       const u = uCell(pos)
       fill = COLORS[faceletHome(state, 'U', u.row, u.col)] ?? DEAD

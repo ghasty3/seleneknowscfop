@@ -16,7 +16,7 @@
  *  FLECHAS    hay flecha por cada pieza fuera de su sitio, y ninguna sobre una que sí está.
  *  PISO       el estado pintado no es el cubo resuelto (una ficha nunca planta el cubo ya hecho).
  *
- * Veredatos por caso: OK · SOLVED · NOARROW · PHANTOM · FLAT · TWIST · TOP · PAINT · ARROWS
+ * Veredatos por caso: OK · SOLVED · NOARROW · PHANTOM · FLAT · TWIST · TOP · PAINT · ARROWS · STRIP
  * El veredicto ARROWS compara las flechas del SVG que de verdad pinta la web con las piezas
  * desplazadas del estado: invariant = cada pieza desplazada aporta UNA punta de flecha.
  */
@@ -102,20 +102,29 @@ for (const ref of refs) {
   const movedE = ePerm.filter((p, i) => p !== i).length
   const moved = movedC + movedE
 
-  // Colores que el diagrama pintaría en la cara U para este caso (misma lógica que CaseDiagram).
+  // `painted` = colores laterales que el diagrama saca en las franjas para cada pieza desplazada
+  // (la rejilla de PLL va fija en amarillo). `twists` = piezas torcidas (no existe en un PLL real).
+  // `strips` = piezas desplazadas cuya pegatina lateral sale con el color de su propia cara.
   const painted: string[] = []
   const twists: string[] = []
+  const strips: string[] = []
   LL_CORNERS.forEach((p, i) => {
     if (cPerm[i] === i) return
     const letter = faceletHome(state, SIDE_CORNER[i][0], SIDE_CORNER[i][1], SIDE_CORNER[i][2])
+    const letter2 = faceletHome(state, SIDE_CORNER2[i][0], SIDE_CORNER2[i][1], SIDE_CORNER2[i][2])
     painted.push(letter)
     if (letter === 'U') twists.push(`C${i}`)
+    // Con la rejilla fija en amarillo, la única señal de que la pieza está movida son sus dos
+    // pegatinas laterales en las franjas: tienen que ser colores que NO son de la cara en la que
+    // se dibujan. Si alguna sale «de casa», esa pieza se ve colocada y el dibujo miente.
+    if (letter === SIDE_CORNER[i][0] || letter2 === SIDE_CORNER2[i][0]) strips.push(`C${i}`)
   })
   LL_EDGES.forEach((p, i) => {
     if (ePerm[i] === i) return
     const letter = faceletHome(state, SIDE_EDGE[i][0], SIDE_EDGE[i][1], SIDE_EDGE[i][2])
     painted.push(letter)
     if (letter === 'U') twists.push(`E${i}`)
+    if (letter === SIDE_EDGE[i][0]) strips.push(`E${i}`)
   })
 
   // Stickers de la última capa en los cuatro lados: cuántos salen con un color que no es el de la
@@ -143,9 +152,10 @@ for (const ref of refs) {
   else if (def.expect === 'pll' && heads !== moved) verdict = 'ARROWS'
   else if (def.expect === 'oll' && heads > 0) verdict = 'ARROWS'
   else if (def.expect === 'pll' && twists.length) verdict = 'TWIST'
+  else if (def.expect === 'pll' && strips.length) verdict = 'STRIP'
   else if (def.expect === 'pll' && painted.length !== moved) verdict = 'PAINT'
   if (verdict !== 'OK') bad++
-  lines.push(`${verdict.padEnd(8)} ${ref.id.padEnd(10)} C${cPerm.join('')} E${ePerm.join('')} mov=${moved} flechas=${heads} pintado=[${painted.join('')}] foreign=${foreign} up=[${upGrid.join(' ')}] ${def.algs[0]}`)
+  lines.push(`${verdict.padEnd(8)} ${ref.id.padEnd(10)} C${cPerm.join('')} E${ePerm.join('')} mov=${moved} flechas=${heads} franjas_tapadas=[${strips.join('')}] pintado=[${painted.join('')}] foreign=${foreign} up=[${upGrid.join(' ')}] ${def.algs[0]}`)
 }
 
 console.log(geomIssues.length ? `GEOMETRÍA:\n  ${geomIssues.join('\n  ')}\n` : 'GEOMETRÍA: OK (12 celdas de la corona, fila y columna correctas)\n')
