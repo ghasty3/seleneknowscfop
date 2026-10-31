@@ -7,6 +7,7 @@ import { AlgoPlayer, notationLegend } from '../components/AlgoPlayer'
 import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
 import { Chevron } from '../components/icons'
 import { caseState, cloneState, parseAlg, applyMoves } from '../cube/engine'
+import { canonicalView } from '../cube/caseUtils'
 import { EDGE_SHAPE_LABEL, PERM_LABEL, SLOT_LABEL, f2lPattern, ollPattern, pllPattern } from '../cube/caseUtils'
 import { groupOf, CaseCard } from './StagePage'
 import { NotFound } from './Home'
@@ -31,7 +32,9 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
   const [setup, setSetup] = useState<string[]>([])
 
   const def = ref?.def
-  const base = useMemo(() => (def ? caseState(def.algs[0]) : null), [def])
+  // plantado en la vista canónica (los algs con preparación se plantan girados)
+  const view = useMemo(() => (def ? canonicalView(def.algs[0]) : null), [def])
+  const base = view?.state ?? null
   const state = useMemo(() => {
     if (!base) return null
     const s = cloneState(base)
@@ -143,7 +146,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
               <div className="grid cols-2">
                 {def.algs.map((a, i) => (
                   <div className="panel" key={i}>
-                    <AlgoPlayer alg={a} startState={base ? cloneState(base) : undefined} loops={1} mirrored={mirrored} explain />
+                    <AlgoPlayer alg={canonicalView(a).play} startState={base ? cloneState(base) : undefined} loops={1} mirrored={mirrored} explain />
                   </div>
                 ))}
               </div>
@@ -184,7 +187,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
           <div className="panel player-panel">
             <AlgoPlayer
               key={`${ref.id}-${mirrored}-${setup.join('')}`}
-              alg={def.algs[0]}
+              alg={view?.play ?? def.algs[0]}
               startState={state}
               mirrored={mirrored}
               loops={loops}
