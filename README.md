@@ -103,10 +103,18 @@ entre dispositivos (no hay backend).
   2. Fichas F2L cuyo plantado, según el heurístico de patrón, no encaja con la descripción
      literal del hueco/par (9 fichas).
 
-Es la convención de ciclos de cara del motor (`src/cube/engine.ts`, `MOVE_SPECS`) la que está
-en revisión: es internamente coherente (identidad, inversa, `alg + inversa = resuelto`) pero hay
-que contrastarla contra un modelo de referencia para que los prerequisitos canónicos den verde.
+Dos limitaciones del motor (`src/cube/engine.ts`) están abiertas y explican la mayoría de avisos:
+
+1. **Las rotaciones de cubo completo (`x`, `y`, `z`) no giran los centros.** `applyMove` solo
+   mueve aristas y esquinas; los 48 facelets de centro (`CubeState.centers`) son estáticos y
+   `isSolved` exige además `c.rot[0] === 1`. Por eso no se puede presentar un plantado en el
+   marco canónico (última capa arriba) de forma fiel: `canonicalView()` / `canonicalizeState()`
+   en `src/cube/caseUtils.ts` prueban las 24 rotaciones, se auto-comprueban con `isSolved` y
+   **caen siempre al plantado crudo**, que es lo que muestra la ficha. Falta implementar la
+   rotación de centros (facelets de cara y de arista-centro) para poder girar el marco.
+2. **Convención de ciclos de cara en revisión.** Los prerequisitos canónicos (capa orientada,
+   permutación que solo toca la última capa) no dan verde en 38 fichas; la permutación declarada
+   y el cierre del plantado sí cuadran en las 111. Falta un modelo de referencia contra el que
+   contrastar `MOVE_SPECS`.
+
 Herramientas: `scripts/verify.mts`, `scripts/contrast.mts`, `scripts/fixtures/cubzor-{oll,pll}.json`.
-Vista canónica de un plantado con preparación: `canonicalView()` y `canonicalizeState()` en
-`src/cube/caseUtils.ts` (rota el cubo entero hasta el marco canónico y auto-comprueba que la
-secuencia jugada cierra; si no cierra, devuelve el plantado crudo).

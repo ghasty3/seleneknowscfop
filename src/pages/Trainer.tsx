@@ -4,7 +4,6 @@ import type { StageKey } from '../data/types'
 import { LevelBar, SolveTrainer, Star, StageProgress } from '../components/Controls'
 import { AlgoPlayer } from '../components/AlgoPlayer'
 import { applyMoves, caseState, cloneState, invertMoves, parseAlg, stateFromAlg, algToString } from '../cube/engine'
-import { canonicalView } from '../cube/caseUtils'
 import { SLOT_LABEL, f2lPattern } from '../cube/caseUtils'
 import { progress } from '../store/progress'
 
@@ -26,7 +25,7 @@ function CaseTrainer({ stage }: { stage: StageKey }) {
   const [i, setI] = useState(() => Math.floor(Math.random() * refs.length))
   const [reset, setReset] = useState(0)
   const ref: CaseRef = refs[i % refs.length]
-  const start = useMemo(() => canonicalView(ref.def.algs[0]).state, [ref])
+  const start = useMemo(() => caseState(ref.def.algs[0]), [ref])
 
   return (
     <div className="split">
@@ -88,7 +87,7 @@ function PairTrainer() {
   const [i, setI] = useState(0)
   const [reset, setReset] = useState(0)
   const ref = refs[i % refs.length]
-  const start = useMemo(() => canonicalView(ref.def.algs[0]).state, [ref])
+  const start = useMemo(() => caseState(ref.def.algs[0]), [ref])
   const f = useMemo(() => {
     try {
       return f2lPattern(start)

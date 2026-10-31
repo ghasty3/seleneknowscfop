@@ -479,7 +479,9 @@ const ROT_WORDS = (() => {
 })()
 
 /**
- * Vista canónica de un plantado. Algunos algoritmos llevan la preparación escrita (`x`, `y`) y
+ * Vista canónica de un plantado (uso de auditoría; en la UI todavía no se puede aplicar:
+ * las rotaciones x/y/z del motor no giran los centros, así que girar el cubo y leer el marco
+ * canónico da resultados imposibles y `canonicalView` cae siempre al plantado crudo). Algunos algoritmos llevan la preparación escrita (`x`, `y`) y
  * otros la llevan implícita, así que el plantado sale con la última capa mirando a otro lado.
  * `canonicalView` prueba las 24 rotaciones del cubo entero (centros incluidos, que es lo
  * físicamente correcto) y se queda con la que deja las dos primeras capas resueltas en el marco
