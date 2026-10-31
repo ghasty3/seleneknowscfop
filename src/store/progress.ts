@@ -61,11 +61,18 @@ function persist() {
   }
 }
 
+/**
+ * Cambios in situ NO valen: `useSyncExternalStore` compara la identidad del snapshot, así que un
+ * `store[id] = next` deja el mismo objeto y React no re-renderiza —el clic guardaba el nivel sin
+ * dar señal visible hasta recargar la página. Cada mutación publica un objeto nuevo.
+ */
 function patch(id: string, p: Partial<ProgressEntry>) {
   const prev = store[id] ?? blank()
   const next = { ...prev, ...p, updatedAt: Date.now() }
-  if (next.level === 0 && !next.watched && next.times.length === 0) delete store[id]
-  else store[id] = next
+  const draft = { ...store }
+  if (next.level === 0 && !next.watched && next.times.length === 0) delete draft[id]
+  else draft[id] = next
+  store = draft
   persist()
   emit()
 }
