@@ -165,7 +165,11 @@ export function CaseDiagram({
   // tiras izquierda y derecha se leen de arriba abajo con la fila 0 de L y de R.
   type StripCell = { x: number; y: number; w: number; h: number; fill: string; key: string }
   const strips: StripCell[] = []
-  if (pll) {
+  // La corona de las 4 caras adyacentes va en PLL y en OLL: en OLL es la que cuenta la
+  // orientación (una pegatina amarilla en un lado = esa pieza está mal orientada), así que
+  // mostrar solo la tira de abajo dejaba la mitad de la información fuera del dibujo.
+  const crown = pll || m === 'oll'
+  if (crown) {
     for (let c = 0; c < 3; c++) strips.push({ x: c * U, y: 3 * U + STRIP_GAP, w: S, h: STRIP_T, fill: COLORS[faceletHome(state, 'F', 0, c)] ?? DEAD, key: `f${c}` })
     for (let c = 0; c < 3; c++) strips.push({ x: c * U, y: -(STRIP_GAP + STRIP_T), w: S, h: STRIP_T, fill: COLORS[faceletHome(state, 'B', 0, 2 - c)] ?? DEAD, key: `b${c}` })
     for (let r = 0; r < 3; r++) strips.push({ x: -(STRIP_GAP + STRIP_T), y: r * U, w: STRIP_T, h: S, fill: COLORS[faceletHome(state, 'L', r, 0)] ?? DEAD, key: `l${r}` })
@@ -174,7 +178,7 @@ export function CaseDiagram({
     const stripY = 3 * U
     for (let c = 0; c < 3; c++) {
       const color = faceletHome(state, 'F', 0, c)
-      const fill = m === 'oll' && c !== 1 ? (llEdgeOriented(state, [c - 1, 1, 1]) ? FACE_HEX.U : UNORIENTED) : COLORS[color] ?? DEAD
+      const fill = COLORS[color] ?? DEAD
       strips.push({ x: c * U, y: stripY, w: S, h: S * 0.62, fill, key: `s${c}` })
     }
   }
@@ -197,10 +201,10 @@ export function CaseDiagram({
   // diagrama ocupa lo que dibuja (un PLL de solo aristas no paga hueco para las esquinas).
   const usedR = arrows.reduce((mx, a) => Math.max(mx, a.r), 0)
   const half = Math.max(CROWN_OUT - CX, usedR ? usedR + PILL_GAP : 0) + 4
-  const top = pll ? CY - half : -6
-  const bottom = pll ? CY + half : 3 * U + S * 0.62 + 6
-  const left = pll ? CX - half : 0
-  const right = pll ? CX + half : CW
+  const top = crown ? CY - half : -6
+  const bottom = crown ? CY + half : 3 * U + S * 0.62 + 6
+  const left = crown ? CX - half : 0
+  const right = crown ? CX + half : CW
   const width = right - left
   const height = bottom - top
   const cls = ['diagram', m === 'oll' && 'oll', pll && 'pll'].filter(Boolean).join(' ')
