@@ -101,12 +101,12 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
               <CaseDiagram state={state} markers={caseMarkers(def, state)} mode={modeFor(def)} size={150} label="Diagrama del caso" />
             </div>
             {def.ref && (
-              <figure className="ref-fig">
-                <img className="ref-img" src={def.ref} alt={`Casilla oficial de ${def.name} en la lámina GANCUBE`} loading="lazy" />
-                <figcaption>
-                  Casilla oficial de la lámina GANCUBE · el número de GAN no coincide con la numeración estándar: la imagen se empareja por patrón de última capa
-                </figcaption>
-              </figure>
+              <p className="row center ref-dl">
+                <a className="btn" href={def.ref} download={`cubo-${def.name.replace(/\s+/g, '-').toLowerCase()}.svg`}>
+                  Descargar el diagrama (SVG)
+                </a>
+                <span className="dim">Es el mismo dibujo de la ficha, en fichero suelto para imprimir o compartir.</span>
+              </p>
             )}
           </div>
 

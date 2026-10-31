@@ -33,16 +33,14 @@ const STRIP_GAP = 6
 const CROWN_OUT = 3 * U + STRIP_GAP + STRIP_T // borde exterior de la corona
 /** Anillos de las flechas: pegados a la corona, y separados entre sí para que las flechas de
  *  esquinas y de aristas nunca se pisan en un PLL que permuta las dos cosas a la vez. */
-const R_EDGE = CROWN_OUT + 7
-const R_CORNER = R_EDGE + 15
-const PILL_GAP = 13 // holgura alrededor del anillo más exterior usado
 
 /** Amarillo = la pegatina está orientada; gris = no lo está. Los dos únicos colores de OLL. */
 const ORIENTED = FACE_HEX.U
 const UNORIENTED = '#5b5468'
 const DEAD = '#241f31' // celdas que no son última capa
 const CENTER = '#3a3350' // centro de la cara (no informa)
-const ARROW = '#9a6bff' // acento morado oscuro: las flechas de permutación
+const ARROW = '#ffffff' // flechas blancas con contorno negro
+const HALO = '#000000' // contorno negro de las flechas
 
 function cellXY(pos: Pos) {
   const { row, col } = uCell(pos)
@@ -64,19 +62,8 @@ const EDGE_CELL: Record<number, { x: number; y: number }> = {
   3: { x: 0, y: U }, // UL
 }
 
-/** Ángulos de pantalla (y crece hacia abajo) en el orden de LL_CORNERS y LL_EDGES. */
-const CORNER_ANGLE = [45, -45, -135, 135] // UFR abajo-dcha · UBR arriba-dcha · UBL arriba-izda · UFL abajo-izda
-const EDGE_ANGLE = [90, 0, -90, 180] // UF abajo · UR dcha · UB arriba · UL izda
-
-const ptRing = (deg: number, r: number, cx = CX, cy = CY): [number, number] => [
-  cx + r * Math.cos((deg * Math.PI) / 180),
-  cy + r * Math.sin((deg * Math.PI) / 180),
-]
-
 /** Punta de flecha: triángulo relleno con el pico en (x,y) mirando según `ang`. */
-function arrowHead(x: number, y: number, ang: number): string {
-  const L = 12.5
-  const W = 5.5
+function arrowHead(x: number, y: number, ang: number, L = 9, W = 4.2): string {
   const bx = x - L * Math.cos(ang)
   const by = y - L * Math.sin(ang)
   const px = -Math.sin(ang) * W
@@ -84,32 +71,40 @@ function arrowHead(x: number, y: number, ang: number): string {
   return `M${x.toFixed(1)} ${y.toFixed(1)} L${(bx + px).toFixed(1)} ${(by + py).toFixed(1)} L${(bx - px).toFixed(1)} ${(by - py).toFixed(1)} Z`
 }
 
+type P = { x: number; y: number }
+
+const TAIL_I = 0.3 * U // la flecha nace al salir de la pegatina de origen
+const HEAD_I = 0.1 * U // y el pico entra en la pegatina de destino
+
 /**
- * Flecha de permutación sobre un anillo: la pieza en la posición `from` viaja a la posición
- * `to`, y eso es exactamente lo que dibuja la flecha (nace en la pieza, pico en su destino).
- * · salto vecino (90°): arco pegando a la corona, por fuera de las pegatinas laterales.
- * · salto del lado opuesto (180°): arco suave que cruza la cara amarilla, como se dibuja
- *   el PLL-H o el PLL-Z en las láminas.
- * Devuelve el trazo y la punta por separado para que el trazo no se rellene.
+ * Flecha **recta** de permutación sobre la cara: nace en la pegatina de la pieza que viaja y
+ * clava el pico en la pegatina de su destino. Sin curvas: la distancia entre las dos pegatinas
+ * es la longitud de la flecha.
+ * · intercambio del lado opuesto (a,b y b,a): una sola línea con punta en cada extremo, que es
+ *   como se dibuja el PLL-H. Solo se dibuja una vez por pareja (from < to).
+ * Devuelve trazo, punta y (en el intercambio) punta de arranque, por separado.
  */
-function ringArrow(from: number, to: number, angles: number[], r: number): { shaft: string; head: string } | null {
-  let d = angles[to] - angles[from]
-  while (d > 180) d -= 360
-  while (d < -180) d += 360
-  if (d === 0) return null
-  const k = d > 0 ? 1 : -1
-  const INSET = 5 // deja aire con la casilla de origen
-  const a0 = angles[from] + k * INSET
-  const a1 = angles[to] - k * INSET
-  const [sx, sy] = ptRing(a0, r)
-  const [ex, ey] = ptRing(a1, r)
-  if (Math.abs(d) === 180) {
-    const [mx, my] = ptRing(angles[from] + k * 90, r * 0.3)
-    const ang = Math.atan2(ey - my, ex - mx)
-    return { shaft: `M${sx.toFixed(1)} ${sy.toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`, head: arrowHead(ex, ey, ang) }
+function stickerArrow(from: number, to: number, pts: P[], swap: boolean): { shaft: string; head: string; tail?: string } | null {
+  if (from === to) return null
+  if (swap && from > to) return null
+  const p0 = pts[from]
+  const p1 = pts[to]
+  const dx = p1.x - p0.x
+  const dy = p1.y - p0.y
+  const dist = Math.hypot(dx, dy)
+  if (dist < 2) return null
+  const ux = dx / dist
+  const uy = dy / dist
+  const sx = p0.x + ux * TAIL_I
+  const sy = p0.y + uy * TAIL_I
+  const ex = p1.x - ux * HEAD_I
+  const ey = p1.y - uy * HEAD_I
+  const ang = Math.atan2(uy, ux)
+  return {
+    shaft: `M${sx.toFixed(1)} ${sy.toFixed(1)} L${ex.toFixed(1)} ${ey.toFixed(1)}`,
+    head: arrowHead(ex, ey, ang),
+    tail: swap ? arrowHead(sx, sy, ang + Math.PI) : undefined,
   }
-  const ang = (a1 * Math.PI) / 180 + (k > 0 ? Math.PI / 2 : -Math.PI / 2)
-  return { shaft: `M${sx.toFixed(1)} ${sy.toFixed(1)} A${r} ${r} 0 0 ${k > 0 ? 1 : 0} ${ex.toFixed(1)} ${ey.toFixed(1)}`, head: arrowHead(ex, ey, ang) }
 }
 
 /**
@@ -184,23 +179,24 @@ export function CaseDiagram({
   }
 
   // --- flechas de permutación (PLL) ---
-  const arrows: { shaft: string; head: string; r: number }[] = []
+  const arrows: { shaft: string; head: string; tail?: string }[] = []
   if (pll) {
+    const cornerPts = LL_CORNERS.map((_, i) => ({ x: CORNER_CELL[i].x + S / 2, y: CORNER_CELL[i].y + S / 2 }))
+    const edgePts = LL_EDGES.map((_, i) => ({ x: EDGE_CELL[i].x + S / 2, y: EDGE_CELL[i].y + S / 2 }))
     const cPerm = permOf(state, LL_CORNERS)
     for (let i = 0; i < 4; i++) {
-      const a = ringArrow(i, cPerm[i], CORNER_ANGLE, R_CORNER)
-      if (a) arrows.push({ ...a, r: R_CORNER })
+      const a = stickerArrow(i, cPerm[i], cornerPts, cPerm[i] === (i + 2) % 4)
+      if (a) arrows.push(a)
     }
     const ePerm = permOf(state, LL_EDGES)
     for (let i = 0; i < 4; i++) {
-      const a = ringArrow(i, ePerm[i], EDGE_ANGLE, R_EDGE)
-      if (a) arrows.push({ ...a, r: R_EDGE })
+      const a = stickerArrow(i, ePerm[i], edgePts, ePerm[i] === (i + 2) % 4)
+      if (a) arrows.push(a)
     }
   }
-  // Caja cuadrada centrada en la cara, ajustada a los anillos que de verdad hay flechas: así el
-  // diagrama ocupa lo que dibuja (un PLL de solo aristas no paga hueco para las esquinas).
-  const usedR = arrows.reduce((mx, a) => Math.max(mx, a.r), 0)
-  const half = Math.max(CROWN_OUT - CX, usedR ? usedR + PILL_GAP : 0) + 4
+  // Caja cuadrada centrada en la cara: las flechas van sobre la cara, así que el diagrama
+  // mide lo que mide la corona (los anillos exteriores ya no existen).
+  const half = CROWN_OUT - CX + 4
   const top = crown ? CY - half : -6
   const bottom = crown ? CY + half : 3 * U + S * 0.62 + 6
   const left = crown ? CX - half : 0
@@ -228,8 +224,11 @@ export function CaseDiagram({
         <g className="pll-arrows">
           {arrows.map((a, i) => (
             <g key={`a${i}`}>
-              <path d={a.shaft} fill="none" stroke={ARROW} strokeWidth={4.4} strokeLinecap="round" />
-              <path d={a.head} fill={ARROW} stroke="none" />
+              {/* halo oscuro debajo del trazo: el morado se lee sobre el amarillo */}
+              <path d={a.shaft} fill="none" stroke={HALO} strokeWidth={6} strokeLinecap="round" opacity={0.9} />
+              <path d={a.shaft} fill="none" stroke={ARROW} strokeWidth={2.8} strokeLinecap="round" />
+              <path d={a.head} fill={ARROW} stroke={HALO} strokeWidth={1} />
+              {a.tail && <path d={a.tail} fill={ARROW} stroke={HALO} strokeWidth={1} />}
             </g>
           ))}
         </g>

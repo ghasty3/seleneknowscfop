@@ -230,7 +230,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 ### oll · 1 — OLL 1
 - Estado esperado: `oll`
 - Probabilidad: 1/54 (OLL resuelto)
-- Ilustración de referencia: `/ref/oll/1.png`
+- Ilustración de referencia: `/ref/oll/1.svg`
 - Algoritmo 1: `R U2 R2 F R F' U2 R' F R F'`
 - Algoritmo 2: `U R U2 R2 F R F' U2 R' F R F' U'`
 - Algoritmo 3: `U2 R U2 R2 F R F' U2 R' F R F' U2`
@@ -239,7 +239,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 ### oll · 2 — OLL 2
 - Estado esperado: `oll`
 - Probabilidad: 1/54
-- Ilustración de referencia: `/ref/oll/2.png`
+- Ilustración de referencia: `/ref/oll/2.svg`
 - Algoritmo 1: `F R U R' U' F' f R U R' U' f'`
 - Algoritmo 2: `U F R U R' U' F' f R U R' U' f' U'`
 - Algoritmo 3: `U2 F R U R' U' F' f R U R' U' f' U2`
@@ -247,7 +247,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 3 — OLL 3
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/3.png`
+- Ilustración de referencia: `/ref/oll/3.svg`
 - Algoritmo 1: `f R U R' U' f' U' F R U R' U' F'`
 - Algoritmo 2: `U f R U R' U' f' U' F R U R' U' F' U'`
 - Algoritmo 3: `U2 f R U R' U' f' U' F R U R' U' F' U2`
@@ -255,7 +255,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 4 — OLL 4
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/4.png`
+- Ilustración de referencia: `/ref/oll/4.svg`
 - Algoritmo 1: `f R U R' U' f' U F R U R' U' F'`
 - Algoritmo 2: `U f R U R' U' f' U F R U R' U' F' U'`
 - Algoritmo 3: `U2 f R U R' U' f' U F R U R' U' F' U2`
@@ -263,7 +263,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 17 — OLL 17
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/17.png`
+- Ilustración de referencia: `/ref/oll/17.svg`
 - Algoritmo 1: `R U R' U R' F R F' U2 R' F R F'`
 - Algoritmo 2: `U R U R' U R' F R F' U2 R' F R F' U'`
 - Algoritmo 3: `U2 R U R' U R' F R F' U2 R' F R F' U2`
@@ -271,7 +271,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 18 — OLL 18
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/18.png`
+- Ilustración de referencia: `/ref/oll/18.svg`
 - Algoritmo 1: `r U R' U R U2 r2 U' R U' R' U2 r`
 - Algoritmo 2: `U r U R' U R U2 r2 U' R U' R' U2 r U'`
 - Algoritmo 3: `U2 r U R' U R U2 r2 U' R U' R' U2 r U2`
@@ -279,7 +279,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 19 — OLL 19
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/19.png`
+- Ilustración de referencia: `/ref/oll/19.svg`
 - Algoritmo 1: `M U R U R' U' M' R' F R F'`
 - Algoritmo 2: `U M U R U R' U' M' R' F R F' U'`
 - Algoritmo 3: `U2 M U R U R' U' M' R' F R F' U2`
@@ -287,7 +287,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 20 — OLL 20
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/20.png`
+- Ilustración de referencia: `/ref/oll/20.svg`
 - Algoritmo 1: `M U R U R' U' M2 U R U' r'`
 - Algoritmo 2: `U M U R U R' U' M2 U R U' r' U'`
 - Algoritmo 3: `U2 M U R U R' U' M2 U R U' r' U2`
@@ -295,7 +295,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 51 — OLL 51
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/51.png`
+- Ilustración de referencia: `/ref/oll/51.svg`
 - Algoritmo 1: `f R U R' U' R U R' U' f'`
 - Algoritmo 2: `U f R U R' U' R U R' U' f' U'`
 - Algoritmo 3: `U2 f R U R' U' R U R' U' f' U2`
@@ -303,7 +303,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 52 — OLL 52
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/52.png`
+- Ilustración de referencia: `/ref/oll/52.svg`
 - Algoritmo 1: `R U R' U R U' B U' B' R'`
 - Algoritmo 2: `U R U R' U R U' B U' B' R' U'`
 - Algoritmo 3: `U2 R U R' U R U' B U' B' R' U2`
@@ -311,7 +311,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 55 — OLL 55
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/55.png`
+- Ilustración de referencia: `/ref/oll/55.svg`
 - Algoritmo 1: `R U2 R2 U' R U' R' U2 F R F'`
 - Algoritmo 2: `U R U2 R2 U' R U' R' U2 F R F' U'`
 - Algoritmo 3: `U2 R U2 R2 U' R U' R' U2 F R F' U2`
@@ -319,7 +319,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 56 — OLL 56
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/56.png`
+- Ilustración de referencia: `/ref/oll/56.svg`
 - Algoritmo 1: `r U r' U R U' R' U R U' R' r U' r'`
 - Algoritmo 2: `U r U r' U R U' R' U R U' R' r U' r' U'`
 - Algoritmo 3: `U2 r U r' U R U' R' U R U' R' r U' r' U2`
@@ -327,7 +327,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 28 — OLL 28
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/28.png`
+- Ilustración de referencia: `/ref/oll/28.svg`
 - Algoritmo 1: `r U R' U' r' R U R U' R'`
 - Algoritmo 2: `U r U R' U' r' R U R U' R' U'`
 - Algoritmo 3: `U2 r U R' U' r' R U R U' R' U2`
@@ -335,7 +335,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 57 — OLL 57
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/57.png`
+- Ilustración de referencia: `/ref/oll/57.svg`
 - Algoritmo 1: `R U R' U' M' U R U' r'`
 - Algoritmo 2: `U R U R' U' M' U R U' r' U'`
 - Algoritmo 3: `U2 R U R' U' M' U R U' r' U2`
@@ -343,7 +343,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 48 — OLL 48
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/48.png`
+- Ilustración de referencia: `/ref/oll/48.svg`
 - Algoritmo 1: `F R U R' U' R U R' U' F'`
 - Algoritmo 2: `U F R U R' U' R U R' U' F' U'`
 - Algoritmo 3: `U2 F R U R' U' R U R' U' F' U2`
@@ -351,7 +351,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 47 — OLL 47
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/47.png`
+- Ilustración de referencia: `/ref/oll/47.svg`
 - Algoritmo 1: `F' L' U' L U L' U' L U F`
 - Algoritmo 2: `U F' L' U' L U L' U' L U F U'`
 - Algoritmo 3: `U2 F' L' U' L U L' U' L U F U2`
@@ -359,7 +359,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 49 — OLL 49
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/49.png`
+- Ilustración de referencia: `/ref/oll/49.svg`
 - Algoritmo 1: `r U' r2 U r2 U r2 U' r`
 - Algoritmo 2: `U r U' r2 U r2 U r2 U' r U'`
 - Algoritmo 3: `U2 r U' r2 U r2 U r2 U' r U2`
@@ -367,7 +367,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 50 — OLL 50
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/50.png`
+- Ilustración de referencia: `/ref/oll/50.svg`
 - Algoritmo 1: `r' U r2 U' r2 U' r2 U r'`
 - Algoritmo 2: `U r' U r2 U' r2 U' r2 U r' U'`
 - Algoritmo 3: `U2 r' U r2 U' r2 U' r2 U r' U2`
@@ -375,7 +375,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 53 — OLL 53
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/53.png`
+- Ilustración de referencia: `/ref/oll/53.svg`
 - Algoritmo 1: `r' U' R U' R' U R U' R' U2 r`
 - Algoritmo 2: `U r' U' R U' R' U R U' R' U2 r U'`
 - Algoritmo 3: `U2 r' U' R U' R' U R U' R' U2 r U2`
@@ -383,7 +383,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 54 — OLL 54
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/54.png`
+- Ilustración de referencia: `/ref/oll/54.svg`
 - Algoritmo 1: `r U R' U R U' R' U R U2 r'`
 - Algoritmo 2: `U r U R' U R U' R' U R U2 r' U'`
 - Algoritmo 3: `U2 r U R' U R U' R' U R U2 r' U2`
@@ -391,7 +391,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 35 — OLL 35
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/35.png`
+- Ilustración de referencia: `/ref/oll/35.svg`
 - Algoritmo 1: `R U2 R2 F R F' R U2 R'`
 - Algoritmo 2: `U R U2 R2 F R F' R U2 R' U'`
 - Algoritmo 3: `U2 R U2 R2 F R F' R U2 R' U2`
@@ -399,7 +399,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 33 — OLL 33
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/33.png`
+- Ilustración de referencia: `/ref/oll/33.svg`
 - Algoritmo 1: `R U R' U' R' F R F'`
 - Algoritmo 2: `U R U R' U' R' F R F' U'`
 - Algoritmo 3: `U2 R U R' U' R' F R F' U2`
@@ -407,7 +407,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 45 — OLL 45
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/45.png`
+- Ilustración de referencia: `/ref/oll/45.svg`
 - Algoritmo 1: `F R U R' U' F'`
 - Algoritmo 2: `U F R U R' U' F' U'`
 - Algoritmo 3: `U2 F R U R' U' F' U2`
@@ -415,7 +415,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 44 — OLL 44
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/44.png`
+- Ilustración de referencia: `/ref/oll/44.svg`
 - Algoritmo 1: `f R U R' U' f'`
 - Algoritmo 2: `U f R U R' U' f' U'`
 - Algoritmo 3: `U2 f R U R' U' f' U2`
@@ -423,7 +423,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 43 — OLL 43
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/43.png`
+- Ilustración de referencia: `/ref/oll/43.svg`
 - Algoritmo 1: `f' L' U' L U f`
 - Algoritmo 2: `U f' L' U' L U f U'`
 - Algoritmo 3: `U2 f' L' U' L U f U2`
@@ -431,7 +431,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 34 — OLL 34
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/34.png`
+- Ilustración de referencia: `/ref/oll/34.svg`
 - Algoritmo 1: `R U R2 U' R' F R U R U' F'`
 - Algoritmo 2: `U R U R2 U' R' F R U R U' F' U'`
 - Algoritmo 3: `U2 R U R2 U' R' F R U R U' F' U2`
@@ -439,7 +439,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 46 — OLL 46
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/46.png`
+- Ilustración de referencia: `/ref/oll/46.svg`
 - Algoritmo 1: `R' U' R' F R F' U R`
 - Algoritmo 2: `U R' U' R' F R F' U R U'`
 - Algoritmo 3: `U2 R' U' R' F R F' U R U2`
@@ -447,7 +447,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 38 — OLL 38
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/38.png`
+- Ilustración de referencia: `/ref/oll/38.svg`
 - Algoritmo 1: `R U R' U R U' R' U' R' F R F'`
 - Algoritmo 2: `U R U R' U R U' R' U' R' F R F' U'`
 - Algoritmo 3: `U2 R U R' U R U' R' U' R' F R F' U2`
@@ -455,7 +455,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 36 — OLL 36
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/36.png`
+- Ilustración de referencia: `/ref/oll/36.svg`
 - Algoritmo 1: `L' U' L U' L' U L U L F' L' F`
 - Algoritmo 2: `U L' U' L U' L' U L U L F' L' F U'`
 - Algoritmo 3: `U2 L' U' L U' L' U L U L F' L' F U2`
@@ -463,7 +463,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 22 — OLL 22
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/22.png`
+- Ilustración de referencia: `/ref/oll/22.svg`
 - Algoritmo 1: `R U2 R2 U' R2 U' R2 U2 R`
 - Algoritmo 2: `U R U2 R2 U' R2 U' R2 U2 R U'`
 - Algoritmo 3: `U2 R U2 R2 U' R2 U' R2 U2 R U2`
@@ -471,7 +471,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 24 — OLL 24
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/24.png`
+- Ilustración de referencia: `/ref/oll/24.svg`
 - Algoritmo 1: `r U R' U' r' F R F'`
 - Algoritmo 2: `U r U R' U' r' F R F' U'`
 - Algoritmo 3: `U2 r U R' U' r' F R F' U2`
@@ -479,7 +479,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 25 — OLL 25
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/25.png`
+- Ilustración de referencia: `/ref/oll/25.svg`
 - Algoritmo 1: `F' r U R' U' r' F R`
 - Algoritmo 2: `U F' r U R' U' r' F R U'`
 - Algoritmo 3: `U2 F' r U R' U' r' F R U2`
@@ -487,7 +487,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 13 — OLL 13
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/13.png`
+- Ilustración de referencia: `/ref/oll/13.svg`
 - Algoritmo 1: `r U' r' U' r U r' F' U F`
 - Algoritmo 2: `U r U' r' U' r U r' F' U F U'`
 - Algoritmo 3: `U2 r U' r' U' r U r' F' U F U2`
@@ -495,7 +495,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 14 — OLL 14
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/14.png`
+- Ilustración de referencia: `/ref/oll/14.svg`
 - Algoritmo 1: `R' F R U R' F' R F U' F'`
 - Algoritmo 2: `U R' F R U R' F' R F U' F' U'`
 - Algoritmo 3: `U2 R' F R U R' F' R F U' F' U2`
@@ -503,7 +503,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 15 — OLL 15
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/15.png`
+- Ilustración de referencia: `/ref/oll/15.svg`
 - Algoritmo 1: `r' U' r R' U' R U r' U r`
 - Algoritmo 2: `U r' U' r R' U' R U r' U r U'`
 - Algoritmo 3: `U2 r' U' r R' U' R U r' U r U2`
@@ -511,7 +511,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 16 — OLL 16
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/16.png`
+- Ilustración de referencia: `/ref/oll/16.svg`
 - Algoritmo 1: `r U r' R U R' U' r U' r'`
 - Algoritmo 2: `U r U r' R U R' U' r U' r' U'`
 - Algoritmo 3: `U2 r U r' R U R' U' r U' r' U2`
@@ -519,7 +519,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 31 — OLL 31
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/31.png`
+- Ilustración de referencia: `/ref/oll/31.svg`
 - Algoritmo 1: `R' U' F U R U' R' F' R`
 - Algoritmo 2: `U R' U' F U R U' R' F' R U'`
 - Algoritmo 3: `U2 R' U' F U R U' R' F' R U2`
@@ -527,7 +527,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 32 — OLL 32
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/32.png`
+- Ilustración de referencia: `/ref/oll/32.svg`
 - Algoritmo 1: `R U B' U' R' U R B R'`
 - Algoritmo 2: `U R U B' U' R' U R B R' U'`
 - Algoritmo 3: `U2 R U B' U' R' U R B R' U2`
@@ -535,7 +535,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 29 — OLL 29
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/29.png`
+- Ilustración de referencia: `/ref/oll/29.svg`
 - Algoritmo 1: `R U R' U' R U' R' F' U' F R U R'`
 - Algoritmo 2: `U R U R' U' R U' R' F' U' F R U R' U'`
 - Algoritmo 3: `U2 R U R' U' R U' R' F' U' F R U R' U2`
@@ -543,7 +543,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 30 — OLL 30
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/30.png`
+- Ilustración de referencia: `/ref/oll/30.svg`
 - Algoritmo 1: `F R' F R2 U' R' U' R U R' F2`
 - Algoritmo 2: `U F R' F R2 U' R' U' R U R' F2 U'`
 - Algoritmo 3: `U2 F R' F R2 U' R' U' R U R' F2 U2`
@@ -551,7 +551,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 41 — OLL 41
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/41.png`
+- Ilustración de referencia: `/ref/oll/41.svg`
 - Algoritmo 1: `R U R' U R U2 R' F R U R' U' F'`
 - Algoritmo 2: `U R U R' U R U2 R' F R U R' U' F' U'`
 - Algoritmo 3: `U2 R U R' U R U2 R' F R U R' U' F' U2`
@@ -559,7 +559,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 42 — OLL 42
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/42.png`
+- Ilustración de referencia: `/ref/oll/42.svg`
 - Algoritmo 1: `R' U' R U' R' U2 R F R U R' U' F'`
 - Algoritmo 2: `U R' U' R U' R' U2 R F R U R' U' F' U'`
 - Algoritmo 3: `U2 R' U' R U' R' U2 R F R U R' U' F' U2`
@@ -567,7 +567,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 7 — OLL 7
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/7.png`
+- Ilustración de referencia: `/ref/oll/7.svg`
 - Algoritmo 1: `r U R' U R U2 r'`
 - Algoritmo 2: `U r U R' U R U2 r' U'`
 - Algoritmo 3: `U2 r U R' U R U2 r' U2`
@@ -575,7 +575,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 8 — OLL 8
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/8.png`
+- Ilustración de referencia: `/ref/oll/8.svg`
 - Algoritmo 1: `r' U' R U' R' U2 r`
 - Algoritmo 2: `U r' U' R U' R' U2 r U'`
 - Algoritmo 3: `U2 r' U' R U' R' U2 r U2`
@@ -583,7 +583,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 9 — OLL 9
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/9.png`
+- Ilustración de referencia: `/ref/oll/9.svg`
 - Algoritmo 1: `R U R' U' R' F R2 U R' U' F'`
 - Algoritmo 2: `U R U R' U' R' F R2 U R' U' F' U'`
 - Algoritmo 3: `U2 R U R' U' R' F R2 U R' U' F' U2`
@@ -591,7 +591,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 10 — OLL 10
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/10.png`
+- Ilustración de referencia: `/ref/oll/10.svg`
 - Algoritmo 1: `R U R' U R' F R F' R U2 R'`
 - Algoritmo 2: `R U R' U R' F R F'`
 - Algoritmo 3: `U R U R' U R' F R F' R U2 R' U'`
@@ -599,7 +599,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 11 — OLL 11
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/11.png`
+- Ilustración de referencia: `/ref/oll/11.svg`
 - Algoritmo 1: `r U R' U R' F R F' R U2 r'`
 - Algoritmo 2: `U r U R' U R' F R F' R U2 r' U'`
 - Algoritmo 3: `U2 r U R' U R' F R F' R U2 r' U2`
@@ -607,7 +607,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 12 — OLL 12
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/12.png`
+- Ilustración de referencia: `/ref/oll/12.svg`
 - Algoritmo 1: `F R U R' U' F' U F R U R' U' F'`
 - Algoritmo 2: `U F R U R' U' F' U F R U R' U' F' U'`
 - Algoritmo 3: `U2 F R U R' U' F' U F R U R' U' F' U2`
@@ -615,7 +615,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 5 — OLL 5
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/5.png`
+- Ilustración de referencia: `/ref/oll/5.svg`
 - Algoritmo 1: `r' U2 R U R' U r`
 - Algoritmo 2: `U r' U2 R U R' U r U'`
 - Algoritmo 3: `U2 r' U2 R U R' U r U2`
@@ -623,7 +623,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 6 — OLL 6
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/6.png`
+- Ilustración de referencia: `/ref/oll/6.svg`
 - Algoritmo 1: `r U2 R' U' R U' r'`
 - Algoritmo 2: `U r U2 R' U' R U' r' U'`
 - Algoritmo 3: `U2 r U2 R' U' R U' r' U2`
@@ -631,7 +631,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 37 — OLL 37
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/37.png`
+- Ilustración de referencia: `/ref/oll/37.svg`
 - Algoritmo 1: `F R U' R' U' R U R' F'`
 - Algoritmo 2: `U F R U' R' U' R U R' F' U'`
 - Algoritmo 3: `U2 F R U' R' U' R U R' F' U2`
@@ -639,7 +639,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 39 — OLL 39
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/39.png`
+- Ilustración de referencia: `/ref/oll/39.svg`
 - Algoritmo 1: `L F' L' U' L U F U' L'`
 - Algoritmo 2: `U L F' L' U' L U F U' L' U'`
 - Algoritmo 3: `U2 L F' L' U' L U F U' L' U2`
@@ -647,7 +647,7 @@ Los 57 casos completos, nombrados según las tablas de Gan.
 
 ### oll · 40 — OLL 40
 - Estado esperado: `oll`
-- Ilustración de referencia: `/ref/oll/40.png`
+- Ilustración de referencia: `/ref/oll/40.svg`
 - Algoritmo 1: `R' F R U R' U' F' U R`
 - Algoritmo 2: `U R' F R U R' U' F' U R U'`
 - Algoritmo 3: `U2 R' F R U R' U' F' U R U2`
@@ -659,17 +659,17 @@ Permutas de la última capa: adyacentes, opuestas, diagonal y ciclos.
 
 ### pll · Ua — PLL Ua
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ua.png`
+- Ilustración de referencia: `/ref/pll/Ua.svg`
 - Algoritmo 1: `R U' R U R U R U' R' U' R2`
 
 ### pll · Ub — PLL Ub
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ub.png`
+- Ilustración de referencia: `/ref/pll/Ub.svg`
 - Algoritmo 1: `R2 U R U R' U' R' U' R' U R'`
 
 ### pll · H — PLL H
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/H.png`
+- Ilustración de referencia: `/ref/pll/H.svg`
 - Algoritmo 1: `M2 U M2 U2 M2 U M2`
 - Algoritmo 2: `U M2 U M2 U2 M2 U M2 U'`
 - Algoritmo 3: `U2 M2 U M2 U2 M2 U M2 U2`
@@ -677,72 +677,72 @@ Permutas de la última capa: adyacentes, opuestas, diagonal y ciclos.
 
 ### pll · Z — PLL Z
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Z.png`
+- Ilustración de referencia: `/ref/pll/Z.svg`
 - Algoritmo 1: `M' U M2 U M2 U M' U2 M2`
 
 ### pll · T — PLL T
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/T.png`
+- Ilustración de referencia: `/ref/pll/T.svg`
 - Algoritmo 1: `R U R' U' R' F R2 U' R' U' R U R' F'`
 
 ### pll · Ja — PLL Ja
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ja.png`
+- Ilustración de referencia: `/ref/pll/Ja.svg`
 - Algoritmo 1: `R' U L' U2 R U' R' U2 R L`
 
 ### pll · Jb — PLL Jb
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Jb.png`
+- Ilustración de referencia: `/ref/pll/Jb.svg`
 - Algoritmo 1: `R U R' F' R U R' U' R' F R2 U' R'`
 
 ### pll · Ra — PLL Ra
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ra.png`
+- Ilustración de referencia: `/ref/pll/Ra.svg`
 - Algoritmo 1: `R U R' F' R U2 R' U2 R' F R U R U2 R'`
 
 ### pll · Rb — PLL Rb
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Rb.png`
+- Ilustración de referencia: `/ref/pll/Rb.svg`
 - Algoritmo 1: `R' U2 R U2 R' F R U R' U' R' F' R2`
 
 ### pll · F — PLL F
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/F.png`
+- Ilustración de referencia: `/ref/pll/F.svg`
 - Algoritmo 1: `R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R`
 
 ### pll · Ga — PLL Ga
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ga.png`
+- Ilustración de referencia: `/ref/pll/Ga.svg`
 - Algoritmo 1: `R2 U R' U R' U' R U' R2 D U' R' U R D'`
 
 ### pll · Gb — PLL Gb
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Gb.png`
+- Ilustración de referencia: `/ref/pll/Gb.svg`
 - Algoritmo 1: `R' U' R U D' R2 U R' U R U' R U' R2 D`
 
 ### pll · Gc — PLL Gc
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Gc.png`
+- Ilustración de referencia: `/ref/pll/Gc.svg`
 - Algoritmo 1: `R2 U' R U' R U R' U R2 D' U R U' R' D`
 
 ### pll · Gd — PLL Gd
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Gd.png`
+- Ilustración de referencia: `/ref/pll/Gd.svg`
 - Algoritmo 1: `R U R' U' D R2 U' R U' R' U R' U R2 D'`
 
 ### pll · Aa — PLL Aa
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Aa.png`
+- Ilustración de referencia: `/ref/pll/Aa.svg`
 - Algoritmo 1: `x R' U R' D2 R U' R' D2 R2 x'`
 
 ### pll · Ab — PLL Ab
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Ab.png`
+- Ilustración de referencia: `/ref/pll/Ab.svg`
 - Algoritmo 1: `x R2 D2 R U R' D2 R U' R x'`
 
 ### pll · E — PLL E
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/E.png`
+- Ilustración de referencia: `/ref/pll/E.svg`
 - Algoritmo 1: `x' R U' R' D R U R' D' R U R' D R U' R' D' x`
 - Algoritmo 2: `U x' R U' R' D R U R' D' R U R' D R U' R' D' x U'`
 - Algoritmo 3: `U2 x' R U' R' D R U R' D' R U R' D R U' R' D' x U2`
@@ -750,20 +750,20 @@ Permutas de la última capa: adyacentes, opuestas, diagonal y ciclos.
 
 ### pll · Y — PLL Y
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Y.png`
+- Ilustración de referencia: `/ref/pll/Y.svg`
 - Algoritmo 1: `F R U' R' U' R U R' F' R U R' U' R' F R F'`
 
 ### pll · V — PLL V
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/V.png`
+- Ilustración de referencia: `/ref/pll/V.svg`
 - Algoritmo 1: `R' U R' U' y R' F' R2 U' R' U R' F R F`
 
 ### pll · Na — PLL Na
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Na.png`
+- Ilustración de referencia: `/ref/pll/Na.svg`
 - Algoritmo 1: `R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'`
 
 ### pll · Nb — PLL Nb
 - Estado esperado: `pll`
-- Ilustración de referencia: `/ref/pll/Nb.png`
+- Ilustración de referencia: `/ref/pll/Nb.svg`
 - Algoritmo 1: `R' U R U' R' F' U' F R U R' F R' F' R U' R`

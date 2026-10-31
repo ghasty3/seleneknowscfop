@@ -695,7 +695,7 @@ p { line-height: 1.72; }
 .center { display: grid; justify-items: center; gap: 8px; }
 
 /* Imagen oficial de la lámina GAN dentro de la ficha del caso. */
-.ref-fig { margin: 14px 0 0; display: grid; gap: 8px; }
+.ref-dl { gap: 12px; }
 .ref-img {
   width: 100%;
   max-width: 300px;

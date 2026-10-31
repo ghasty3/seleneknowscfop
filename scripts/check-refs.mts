@@ -1,7 +1,7 @@
 // Comprobación de las imágenes de referencia de los casos.
 //
 // Reglas duras (salida 1 si se incumplen):
-//   1. Toda ruta `ref` de un caso existe como fichero en `public/`.
+//   1. Toda ruta `ref` de un caso existe como fichero en `public/` (diagramas SVG propios).
 //   2. Dos casos de la misma etapa no pueden compartir la misma imagen: cada
 //      caso tiene su propia posición de piezas y una foto compartida miente.
 //
@@ -26,7 +26,7 @@ for (const [stage, casos] of stages) {
   for (const c of conRef) porRef.set(c.ref!, [...(porRef.get(c.ref!) ?? []), c.code])
   const compartidas = [...porRef].filter(([, v]) => v.length > 1)
   const desfasadas = stage === 'f2l' ? [] : conRef
-    .filter(c => c.ref !== `/ref/${stage}/${c.code}.png`)
+    .filter(c => c.ref !== `/ref/${stage}/${c.code}.svg`)
     .map(c => `${c.code} → ${c.ref!.split('/').pop()}`)
 
   if (faltan.length) fallos.push(`${stage}: ${faltan.length} imágenes inexistentes: ${faltan.map(c => c.ref).join(' ')}`)
