@@ -157,21 +157,21 @@ interface Spec {
 const ALL = [-1, 0, 1]
 
 export const MOVE_SPECS: Record<string, Spec> = {
-  R: { axis: 'x', layers: [1], dir: -1 },
-  r: { axis: 'x', layers: [1, 0], dir: -1 },
-  L: { axis: 'x', layers: [-1], dir: 1 },
-  l: { axis: 'x', layers: [-1, 0], dir: 1 },
-  M: { axis: 'x', layers: [0], dir: 1 },
-  U: { axis: 'y', layers: [1], dir: -1 },
-  u: { axis: 'y', layers: [1, 0], dir: -1 },
-  D: { axis: 'y', layers: [-1], dir: 1 },
-  d: { axis: 'y', layers: [-1, 0], dir: 1 },
-  E: { axis: 'y', layers: [0], dir: 1 },
-  F: { axis: 'z', layers: [1], dir: -1 },
-  f: { axis: 'z', layers: [1, 0], dir: -1 },
-  B: { axis: 'z', layers: [-1], dir: 1 },
-  b: { axis: 'z', layers: [-1, 0], dir: 1 },
-  S: { axis: 'z', layers: [0], dir: -1 },
+  R: { axis: 'x', layers: [1], dir: 1 },
+  r: { axis: 'x', layers: [1, 0], dir: 1 },
+  L: { axis: 'x', layers: [-1], dir: -1 },
+  l: { axis: 'x', layers: [-1, 0], dir: -1 },
+  M: { axis: 'x', layers: [0], dir: -1 },
+  U: { axis: 'y', layers: [1], dir: 1 },
+  u: { axis: 'y', layers: [1, 0], dir: 1 },
+  D: { axis: 'y', layers: [-1], dir: -1 },
+  d: { axis: 'y', layers: [-1, 0], dir: -1 },
+  E: { axis: 'y', layers: [0], dir: -1 },
+  F: { axis: 'z', layers: [1], dir: 1 },
+  f: { axis: 'z', layers: [1, 0], dir: 1 },
+  B: { axis: 'z', layers: [-1], dir: -1 },
+  b: { axis: 'z', layers: [-1, 0], dir: -1 },
+  S: { axis: 'z', layers: [0], dir: 1 },
   // Rotaciones del cubo entero en NOTACIÓN ESTÁNDAR, medida sobre solved + cada letra con la
   // matriz del marco que devuelven los centros: `x` = [1,0,0, 0,0,-1, 0,1,0] (F→D→B→U, la forma
   // normal de agarrar con la cruz arriba), `y` = [0,0,1, 0,1,0, -1,0,0] (capa superior girando
@@ -180,7 +180,7 @@ export const MOVE_SPECS: Record<string, Spec> = {
   // fichas no era lo que se ejecutaba, y por eso la vista canónica era imposible.
   x: { axis: 'x', layers: ALL, dir: 1, cubeRot: 'x' },
   y: { axis: 'y', layers: ALL, dir: 1, cubeRot: 'y' },
-  z: { axis: 'z', layers: ALL, dir: -1, cubeRot: 'z' },
+  z: { axis: 'z', layers: ALL, dir: 1, cubeRot: 'z' },
 }
 
 /** Convierte notación en secuencia de movimientos de cuarto de vuelta (R2 => R R). */
@@ -209,7 +209,10 @@ export function parseAlg(alg: string): Move[] {
     }
     if (rest.length) throw new Error(`Movimiento no soportado: "${tok}"`)
     if (prime % 2) dir = dir === 1 ? -1 : 1
-    const turns: 1 | 2 | 3 = half ? 2 : prime % 2 ? 3 : 1
+    // Un prime es UN giro antihorario: la inversión la lleva `dir`. Si además se pusieran 3 vueltas
+    // (`turns: 3`) la inversión se aplicaría dos veces y `R'` saldría igual que `R` (medido: con
+    // eso `R R'` no era identidad y `(R U)` no tenía orden 105, o sea el motor no era un cubo).
+    const turns: 1 | 2 | 3 = half ? 2 : 1
     moves.push({
       id: tok,
       axis: spec.axis,

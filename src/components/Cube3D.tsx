@@ -15,15 +15,25 @@ const FOCAL = 5.6
 /** Luz de la mesa: desde arriba, algo hacia F y R. */
 const LIGHT: [number, number, number] = [0.42, 0.86, 0.58]
 
-const COLORS: Record<string, string> = {
-  U: '#f2e8c9',
-  D: '#2f2a3d',
-  F: '#3fa96b',
-  B: '#2b6fa8',
-  R: '#d1584c',
-  L: '#e2a33c',
+import { FACE_HEX, FACE_HEX_DIM, CORE_HEX } from '../cube/palette'
+
+/**
+ * El color del cubo NO se decide aquí: viene de `src/cube/palette.ts`, que es la fuente de
+ * verdad del esquema oficial (amarillo arriba · blanco abajo · verde delante · azul detrás ·
+ * naranja a la derecha · rojo a la izquierda). Antes esta hoja traía una paleta propia más
+ * apagada y con el rojo y el naranja cambiados de lado, y por eso el cubo 3D no se parecía al
+ * cubo real de la mesa.
+ */
+const COLORS = FACE_HEX
+const COLORS_DIM = FACE_HEX_DIM
+const BODY = CORE_HEX
+/** Mezcla pegatina iluminada → pegatina en sombra (más realista que sombrear una sola base). */
+function stickerFill(face: string, lit: number): string {
+  const a = hexToRgb(COLORS[face])
+  const b = hexToRgb(COLORS_DIM[face])
+  const k = Math.max(0, Math.min(1, (lit - 0.66) / 0.34))
+  return '#' + a.map((v, i) => Math.round(b[i] + (v - b[i]) * k).toString(16).padStart(2, '0')).join('')
 }
-const BODY = '#120e1c'
 
 const AXES: { n: [number, number, number]; face: string }[] = [
   { n: [1, 0, 0], face: 'R' },
@@ -168,7 +178,7 @@ function facesOf(cubie: { pos: V3; rot: number[] }, mirrored: boolean, index: nu
     const lit = 0.66 + 0.34 * Math.max(0, dot(w, LIGHT_N))
     out.push({
       pts: pts.join(' '),
-      fill: isSticker ? shade(COLORS[ax.face], lit) : shade(BODY, 0.8 + 0.3 * Math.max(0, dot(w, LIGHT_N))),
+      fill: isSticker ? stickerFill(ax.face, lit) : shade(BODY, 0.8 + 0.3 * Math.max(0, dot(w, LIGHT_N))),
       stroke: isSticker ? 'rgba(8,5,14,0.55)' : 'rgba(8,5,14,0.85)',
       depth: zsum / 4 + (isSticker ? 0.0015 : 0),
       key: `${index}:${ax.face}`,
