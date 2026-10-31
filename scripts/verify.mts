@@ -42,11 +42,10 @@ function checkExpect(r: { stage: string; def: CaseDef }, base?: CubeState): stri
     }
     case 'pll': {
       // requisito del PLL: la última capa está orientada y todo lo de abajo está resuelto.
-      // Se admite el caso plantado enmarcado con preparación (`x`/`y`): si la permutación de la
-      // última capa es la que anuncia la ficha y el alg cierra, el prerequisito se da por cumplido.
+      // Se mide en la vista canónica (última capa arriba), que ahora es posible porque
+      // `isSolved` y la lectura del marco son invariantes a girar el cubo entero.
       const p0 = ollPattern(s)
-      const rotated = !f2lSolved(s)
-      if ((p0.edges !== 'cross' || p0.unorientedCorners !== 0) && !rotated) return 'la última capa no está orientada (prerequisito del PLL)'
+      if (p0.edges !== 'cross' || p0.unorientedCorners !== 0) return 'la última capa no está orientada (prerequisito del PLL)'
       const bottom = SLOTS.flatMap((s2) => [s2.corner, s2.edge])
       const displaced = bottom.filter((p) => !pieceAtHome(s, p))
       if (displaced.length) return 'altera ' + displaced.length + ' piezas fuera de la última capa (no es un PLL puro)'
@@ -118,16 +117,16 @@ for (const r of refs) {
     const perm = permOf(last, [...LL_CORNERS, ...LL_EDGES])
     if (!perm.every((v, i) => v === i)) bad = 'termina sin la permutación resuelta'
   }
-  // IMPORTANTE (estado del motor): los prerequisitos que comparan contra el marco canónico
-  // (última capa orientada, F2L intacto) se Avisan, no fallan: la convención de ciclos de cara
-  // del motor está en revisión (ver README "Comprobaciones abiertas"). Lo que sí es obligatorio
-  // es que el plantado sea un caso no trivial y que el algoritmo lo cierre (arriba, durísimo).
+  // IMPORTANTE: los prerequisitos que comparan contra el marco canónico (última capa
+  // orientada, F2L intacto) se Avisan, no fallan: son comprobaciones heurísticas sobre la
+  // ficha, no sobre el cubo. Lo que sí es obligatorio es que el plantado sea un caso no
+  // trivial y que el algoritmo lo cierre (arriba, durísimo).
   if (bad) warns.push(`${r.id} ${r.def.name}: ${bad}`)
   else ok += 1
 }
 
 console.log(`casos verificados: ${ok} de ${refs.length}`)
 for (const f of fails) console.log('  FAIL ' + f)
-if (warns.length) console.log(`  Avisos de prerequisito: ${warns.length} (se listan con --verbose)`)
+if (warns.length) console.log(`  Avisos de prerrequisito: ${warns.length} (se listan con --verbose)`)
 if (process.argv.includes('--verbose')) for (const w of warns) console.log('  AVISO ' + w)
 process.exit(0)

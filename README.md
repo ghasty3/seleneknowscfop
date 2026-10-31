@@ -76,14 +76,16 @@ npm run build      # dist/ (publicable en GitHub Pages)
 4. Fingertricks por alg, atallos de teclado, exportar/importar progreso.
 5. GitHub Pages e publicación.
 
-## Estilo e decisiones
+## Estilo y decisiones
 
-- Modo escuro minimalista con acentos morados escuros (`src/styles/global.css`, variables `--bg`,
+- Modo oscuro minimalista con acentos morados oscuros (`src/styles/global.css`, variables `--bg`,
   `--accent`, `--accent-strong`).
-- React + Vite + TypeScript, Sen backend. Todo en `localStorage` do navegador de cada persoa: non hai
-  sincronización entre dispositivos.
-- Idioma da interface: galego/castelán segundo indicacións do usuario.
-- `NODE_ENV` non pode estar en `production` ao instalar dependencias (Vite require `esbuild`).
+- React + Vite + TypeScript, sin backend. Todo el progreso y los tiempos se guardan en
+  `localStorage` del navegador de cada persona: no hay sincronización entre dispositivos.
+- **Idioma del proyecto: castellano.** El gallego no se usa en la interfaz, en el README ni en los
+  comentarios del código. *(Corregido tras la indicación de la persona: la primera versión se escribió
+  en gallego sin que nadie la pidiera.)*
+- `NODE_ENV` no puede estar en `production` al instalar dependencias (Vite requiere `esbuild`).
 
 El progreso y los tiempos se guardan en `localStorage` del navegador de cada persona: no se sincronizan
 entre dispositivos (no hay backend).

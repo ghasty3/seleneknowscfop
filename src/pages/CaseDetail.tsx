@@ -6,7 +6,8 @@ import { LevelBar, Star } from '../components/Controls'
 import { AlgoPlayer, notationLegend } from '../components/AlgoPlayer'
 import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
 import { Chevron } from '../components/icons'
-import { caseState, cloneState, parseAlg, applyMoves } from '../cube/engine'
+import { canonicalView } from '../cube/caseUtils'
+import { cloneState, parseAlg, applyMoves } from '../cube/engine'
 import { EDGE_SHAPE_LABEL, PERM_LABEL, SLOT_LABEL, f2lPattern, ollPattern, pllPattern } from '../cube/caseUtils'
 import { groupOf, CaseCard } from './StagePage'
 import { NotFound } from './Home'
@@ -31,11 +32,12 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
   const [setup, setSetup] = useState<string[]>([])
 
   const def = ref?.def
-  // Plantado crudo: inversa del algoritmo desde el cubo resuelto, que es la garantía del
-  // proyecto (plantado + algoritmo = resuelto). La vista canónica con la última capa arriba no
-  // es posible todavía: las rotaciones de cubo completo (x/y/z) no giran los centros en el
-  // modelo (`src/cube/engine.ts`), así que no hay forma fiel de recolocar el marco.
-  const base = useMemo(() => (def ? caseState(def.algs[0]) : null), [def])
+  // Plantado del caso: la inversa del algoritmo desde el cubo resuelto, que es la garantía del
+  // proyecto (plantado + algoritmo = resuelto). `canonicalView` lo deja además con la última
+  // capa arriba si el algoritmo llevaba su preparación escrita (`x`, `y`): girar el cubo entero
+  // no desordena nada, `isSolved` se mide contra los centros.
+  const canon = useMemo(() => (def ? canonicalView(def.algs[0]) : null), [def])
+  const base = canon ? canon.state : null
   const state = useMemo(() => {
     if (!base) return null
     const s = cloneState(base)
@@ -147,7 +149,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
               <div className="grid cols-2">
                 {def.algs.map((a, i) => (
                   <div className="panel" key={i}>
-                    <AlgoPlayer alg={a} startState={base ? cloneState(base) : undefined} loops={1} mirrored={mirrored} explain />
+                    <AlgoPlayer alg={canon ? canon.play : a} startState={base ? cloneState(base) : undefined} loops={1} mirrored={mirrored} explain />
                   </div>
                 ))}
               </div>
@@ -188,7 +190,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
           <div className="panel player-panel">
             <AlgoPlayer
               key={`${ref.id}-${mirrored}-${setup.join('')}`}
-              alg={def.algs[0]}
+              alg={canon ? canon.play : def.algs[0]}
               startState={state}
               mirrored={mirrored}
               loops={loops}

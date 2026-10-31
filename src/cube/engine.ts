@@ -15,8 +15,11 @@ export interface Move {
 }
 
 type Mat = number[] // 9 elementos, fila mayor
+export type { Mat }
 
 const I: Mat = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+
+export const IDENTITY_MAT: Mat = I
 
 function mat(axis: Axis, dir: 1 | -1): Mat {
   const s = dir === -1 ? -1 : 1 // ángulo = s * 90°
@@ -60,6 +63,12 @@ export function cloneState(s: CubeState): CubeState {
   return { cubies: s.cubies.map((c) => ({ home: [...c.home] as [number, number, number], pos: [...c.pos] as [number, number, number], rot: [...c.rot] })) }
 }
 
+export function applyVec(m: Mat, v: [number, number, number]): [number, number, number] {
+  return apply3(m, v)
+}
+
+export const mulMat = mul
+
 export function applyMove(s: CubeState, m: Move): void {
   const M = mat(m.axis, m.dir)
   for (const c of s.cubies) {
@@ -74,8 +83,64 @@ export function applyMoves(s: CubeState, moves: Move[]): void {
   for (const m of moves) applyMove(s, m)
 }
 
+/**
+ * Matriz del marco: qué rotación del cubo entero llevan los centros. Los centros son el
+ * marco de referencia de un cubo 3x3 normal (no están marcados), así que girar el cubo
+ * entero (`x`, `y`, `z`) NO desordena el cubo: hay que leerlo contra los centros.
+ */
+export function frameMatrix(s: CubeState): Mat | null {
+  const centers = s.cubies.filter((c) => c.pos.filter((v) => v !== 0).length === 1)
+  if (centers.length < 6) return null
+  const M = new Array(9).fill(0)
+  for (const c of centers) {
+    const h = c.home
+    for (let i = 0; i < 3; i++) {
+      if (h[i] === 0) continue
+      for (let j = 0; j < 3; j++) M[j * 3 + i] = h[i] * c.pos[j]
+    }
+  }
+  const cols = [0, 1, 2].map((i) => [M[i], M[3 + i], M[6 + i]])
+  if (new Set(cols.map((c) => c.join(','))).size !== 3) return null
+  if (cols.some((c) => Math.abs(c[0]) + Math.abs(c[1]) + Math.abs(c[2]) !== 1)) return null
+  const det =
+    M[0] * (M[4] * M[8] - M[5] * M[7]) - M[1] * (M[3] * M[8] - M[5] * M[6]) + M[2] * (M[3] * M[7] - M[4] * M[6])
+  return det === 1 ? M : null
+}
+
+/** Transpuesta = inversa para matrices de rotación. */
+export function transpose(m: Mat): Mat {
+  return [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]]
+}
+
+/**
+ * Cubo resuelto: cada pieza en su casa y sin giros, medido CONTRA EL MARCO que marcan los
+ * centros. Una rotación del cubo entero es sólo un cambio de forma de agarrarlo: seguida de
+ * su inversa vuelve a la identidad, y un cubo resuelto agarrado girado sigue siendo resuelto.
+ */
 export function isSolved(s: CubeState): boolean {
-  return s.cubies.every((c) => c.pos[0] === c.home[0] && c.pos[1] === c.home[1] && c.pos[2] === c.home[2] && c.rot[0] === 1)
+  // «Resuelto» se mide contra los centros, que son el marco físico del cubo: si el cubo está
+  // resuelto pero agarrado con una rotación de cubo completo (`x`, `y`, `z`), los centros giran
+  // con él y cada pieza debe llevar la MISMA rotación global que llevan los centros. Comparar
+  // contra la identidad a secas hacía que un cubo resuelto con preparación escrita (`x R U2 R'…`)
+  // nunca se marcara como resuelto — ese era el fallo de lógica del cubo que se veía en el
+  // reproduccor: el paso final se marcaba pero el cubo seguía desordenado.
+  const F = frameMatrix(s) ?? I
+  return s.cubies.every((c) => {
+    // El modelo guarda las matrices por COLUMNAS y `apply3` aplica la transpuesta, así que
+    // apply3(transpose(F), pos) = F·pos en espacio de posiciones.
+    const p = apply3(transpose(F), c.pos)
+    if (p[0] !== c.home[0] || p[1] !== c.home[1] || p[2] !== c.home[2]) return false
+    // Con el marco girado F la rotación de cada pieza es su rotación nativa recableada por el
+    // marco: rot = M_home·F⁻¹. Con matrices fila-major, col_j(rot) = [rot[j], rot[3+j], rot[6+j]]
+    // y debe valer col_j(rot) = col_j(F) · home[j] (los home son ejes con signo).
+    for (let j = 0; j < 3; j++) {
+      const h = c.home[j]
+      const col = [c.rot[j], c.rot[3 + j], c.rot[6 + j]]
+      const want = [h * F[0], h * F[1], h * F[2]]
+      if (col[0] !== want[0] || col[1] !== want[1] || col[2] !== want[2]) return false
+    }
+    return true
+  })
 }
 
 // ---------- Notación ----------

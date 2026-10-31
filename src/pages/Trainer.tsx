@@ -4,7 +4,7 @@ import type { StageKey } from '../data/types'
 import { LevelBar, SolveTrainer, Star, StageProgress } from '../components/Controls'
 import { AlgoPlayer } from '../components/AlgoPlayer'
 import { applyMoves, caseState, cloneState, invertMoves, parseAlg, stateFromAlg, algToString } from '../cube/engine'
-import { SLOT_LABEL, f2lPattern } from '../cube/caseUtils'
+import { SLOT_LABEL, canonicalView, f2lPattern } from '../cube/caseUtils'
 import { progress } from '../store/progress'
 
 const TABS = [
@@ -25,14 +25,15 @@ function CaseTrainer({ stage }: { stage: StageKey }) {
   const [i, setI] = useState(() => Math.floor(Math.random() * refs.length))
   const [reset, setReset] = useState(0)
   const ref: CaseRef = refs[i % refs.length]
-  const start = useMemo(() => caseState(ref.def.algs[0]), [ref])
+  const canon = useMemo(() => canonicalView(ref.def.algs[0]), [ref])
+  const start = canon.state
 
   return (
     <div className="split">
       <div className="panel player-panel">
         <AlgoPlayer
           key={`${ref.id}-${reset}`}
-          alg={ref.def.algs[0]}
+          alg={canon.play}
           startState={start}
           loops={1}
           primary
@@ -87,7 +88,8 @@ function PairTrainer() {
   const [i, setI] = useState(0)
   const [reset, setReset] = useState(0)
   const ref = refs[i % refs.length]
-  const start = useMemo(() => caseState(ref.def.algs[0]), [ref])
+  const canon = useMemo(() => canonicalView(ref.def.algs[0]), [ref])
+  const start = canon.state
   const f = useMemo(() => {
     try {
       return f2lPattern(start)
@@ -99,7 +101,7 @@ function PairTrainer() {
   return (
     <div className="split">
       <div className="panel player-panel">
-        <AlgoPlayer key={`${ref.id}-${reset}`} alg={ref.def.algs[0]} startState={start} loops={1} primary explain />
+        <AlgoPlayer key={`${ref.id}-${reset}`} alg={canon.play} startState={start} loops={1} primary explain />
         <div className="row">
           <button className="btn" onClick={() => setReset((r) => r + 1)}>
             Repetir el par

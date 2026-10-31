@@ -11,8 +11,14 @@ import {
   applyMoves,
   algToString,
   invertMoves,
+  frameMatrix,
+  transpose,
+  mulMat,
+  applyVec,
+  stateFromAlg,
   type CubeState,
   type Face,
+  type Mat,
 } from './engine'
 
 /**
@@ -298,12 +304,55 @@ export function f2lPattern(s: CubeState): F2lPattern {
 
 // ---------- comprobaciones de estructura para verify.mts ----------
 
+const ROT_WORDS = (() => {
+  const ax = ['x', 'y', 'z']
+  const pow = ['', '2', "'"]
+  const out: string[] = ['']
+  for (const a of ax) for (const b of ax) for (const c of ax)
+    for (const pa of pow) for (const pb of pow) for (const pc of pow) out.push(`${a}${pa} ${b}${pb} ${c}${pc}`)
+  return [...new Set(out.map((w) => algToString(parseAlg(w))))]
+})()
+
+/** Gira el cubo entero al marco que marcan los centros (cruz abajo, última capa arriba). */
+export function canonicalByFrame(base: CubeState): { state: CubeState; rot: string } {
+  const F = frameMatrix(base)
+  if (!F) return { state: base, rot: '' }
+  const G = transpose(F)
+  const state = cloneState(base)
+  for (const c of state.cubies) {
+    c.pos = applyVec(G, c.pos)
+    c.rot = mulMat(G, c.rot)
+  }
+  const word = ROT_WORDS.find((w) => {
+    const m = frameMatrix(stateFromAlg(w))
+    return !!m && m.every((v, i) => v === F[i])
+  })
+  return { state, rot: word ?? '' }
+}
+
+/** Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún marco. */
+export function canonicalizeState(base: CubeState): { state: CubeState; rot: string } {
+  const { state, rot } = canonicalByFrame(base)
+  if (rot && f2lSolvedRel(state)) return { state, rot }
+  for (const word of ROT_WORDS) {
+    const state2 = cloneState(base)
+    applyMoves(state2, parseAlg(word))
+    if (f2lSolvedRel(state2)) return { state: state2, rot: word }
+  }
+  return { state: base, rot: '' }
+}
+
+
 export interface StructureCheck {
   ok: boolean
   why: string
 }
 
-export function checkStructure(s: CubeState, expect: string, sig?: Record<string, string | number>): StructureCheck {
+export function checkStructure(s0: CubeState, expect: string, sig?: Record<string, string | number>): StructureCheck {
+  // Todo lo que compara contra el marco canónico (cruz abajo, última capa arriba) se mide
+  // primero girando el cubo al marco que marcan los centros: una preparación `x`/`y` escrita
+  // en el algoritmo no es un cubo desordenado, es el mismo cubo agarrado de otra forma.
+  const s = canonicalizeState(s0).state
   const llPermutationSolved = LL_EDGES.every((p) => pieceAtHome(s, p)) && LL_CORNERS.every((p) => pieceAtHome(s, p))
   const allLlOriented = [...LL_EDGES, ...LL_CORNERS].every((p) => llEdgeOriented(s, p))
   switch (expect) {
@@ -370,7 +419,7 @@ export interface CaseView {
 }
 
 export function buildCaseView(alg: string, expect: string): CaseView {
-  const state = caseState(alg)
+  const { state } = canonicalView(alg)
   let pattern: CaseView['pattern'] = null
   if (expect === 'oll') pattern = ollPattern(state)
   else if (expect === 'pll') pattern = pllPattern(state)
@@ -455,62 +504,48 @@ export function topLayerIsU(s: CubeState): boolean {
 }
 
 export function f2lSolvedRel(s: CubeState): boolean {
-  const M = frameRotation(s)
-  if (!M) return false
+  // El marco lo marcan los centros; el modelo guarda las matrices por columnas, así que para
+  // las helpers fila-major de esta hoja hay que transponer la matriz del marco.
+  const Fm = frameMatrix(s)
+  if (!Fm) return false
+  const M = transpose(Fm)
   const isTop = (p: Pos) => byFrame(M, p)[1] === 1
   for (const c of s.cubies) {
     const nz = c.pos.filter((v) => v !== 0).length
     if (nz === 1) continue // centros: definen el marco
     if (isTop(c.home)) continue // pieza de la última capa en la vista actual
-    if (key(byFrame(M, c.home)) !== key(c.pos)) return false
-    // la orientación de la pieza debe coincidir con la del marco
-    for (let i = 0; i < Math.min(c.rot.length, 9); i++) if (c.rot[i] !== M[i]) return false
+    const want = byFrame(M, c.home)
+    if (key(want) !== key(c.pos)) return false
+    // Con el marco girado, la rotación de la pieza es su rotación nativa recableada por el marco:
+    // la componente j de rot·F⁻¹ es Σ_k fila_j(rot)[k] · col_k(F).
+    const col = [Fm[0], Fm[3], Fm[6]]
+    for (let j = 0; j < 3; j++) {
+      const row = c.rot[j * 3] * col[0] + c.rot[j * 3 + 1] * col[1] + c.rot[j * 3 + 2] * col[2]
+      if (row !== c.home[j]) return false
+    }
   }
   return true
 }
 
-const ROT_WORDS = (() => {
-  const ax = ['x', 'y', 'z']
-  const pow = ['', '2', "'"]
-  const out: string[] = ['']
-  for (const a of ax) for (const b of ax) for (const c of ax)
-    for (const pa of pow) for (const pb of pow) for (const pc of pow) out.push(`${a}${pa} ${b}${pb} ${c}${pc}`)
-  return [...new Set(out.map((w) => algToString(parseAlg(w))))]
-})()
-
 /**
- * Vista canónica de un plantado (uso de auditoría; en la UI todavía no se puede aplicar:
- * las rotaciones x/y/z del motor no giran los centros, así que girar el cubo y leer el marco
- * canónico da resultados imposibles y `canonicalView` cae siempre al plantado crudo). Algunos algoritmos llevan la preparación escrita (`x`, `y`) y
- * otros la llevan implícita, así que el plantado sale con la última capa mirando a otro lado.
- * `canonicalView` prueba las 24 rotaciones del cubo entero (centros incluidos, que es lo
- * físicamente correcto) y se queda con la que deja las dos primeras capas resueltas en el marco
- * canónico; devuelve también lo que hay que tocar en esa vista: `alg` y detrás la rotación
- * inversa. Se auto-comprueba con `isSolved`: si la cuenta no cierra, devuelve el plantado crudo,
- * que siempre cumple la regla del proyecto (plantado + algoritmo = cubo resuelto).
+ * Vista canónica de un plantado: la lámina y algunas librerías escriben los algoritmos con
+ * preparación escrita (`x`, `y`) y otros la llevan implícita, así que el plantado sale con la
+ * última capa mirando a otro lado. `canonicalView` prueba las 24 rotaciones del cubo entero y
+ * se queda con la que deja las dos primeras capas resueltas con la última capa arriba; devuelve
+ * también lo que hay que tocar en esa vista (`alg` y detrás la rotación inversa). La
+ * vista se auto-comprueba con `isSolved` (invariante al marco) y si la cuenta no cierra
+ * devuelve el plantado crudo, que siempre cumple la regla del proyecto (plantado + algoritmo
+ * = cubo resuelto).
  */
-/** Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún marco. */
-export function canonicalizeState(base: CubeState): { state: CubeState; rot: string } {
-  for (const word of ROT_WORDS) {
-    const state = cloneState(base)
-    applyMoves(state, parseAlg(word))
-    if (f2lSolved(state)) return { state, rot: word }
-  }
-  return { state: base, rot: '' }
-}
-
 export function canonicalView(alg: string): { state: CubeState; play: string; rot: string } {
   const base = caseState(alg)
-  for (const word of ROT_WORDS) {
-    const state = cloneState(base)
-    applyMoves(state, parseAlg(word))
-    if (!f2lSolved(state)) continue
-    const back = algToString(invertMoves(parseAlg(word)))
+  const { state, rot } = canonicalByFrame(base)
+  if (rot) {
+    const back = algToString(invertMoves(parseAlg(rot)))
     const play = [alg, back].filter(Boolean).join(' ')
     const check = cloneState(state)
     applyMoves(check, parseAlg(play))
-    if (!isSolved(check)) continue
-    return { state, play, rot: word }
+    if (isSolved(check)) return { state, play, rot }
   }
   return { state: base, play: alg, rot: '' }
 }

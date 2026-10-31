@@ -5,12 +5,12 @@ import { useAllProgress, progress } from '../store/progress'
 import { LevelBar, Star, StageProgress } from '../components/Controls'
 import { CaseDiagram, caseMarkers } from '../components/CaseDiagram'
 import { caseState } from '../cube/engine'
-import { EDGE_SHAPE_LABEL, PERM_LABEL, ollPattern, pllPattern } from '../cube/caseUtils'
+import { canonicalView, EDGE_SHAPE_LABEL, PERM_LABEL, ollPattern, pllPattern } from '../cube/caseUtils'
 
 /** Grupo del caso: el que declara la tabla, o el que calcula el motor a partir del patrón. */
 export function groupOf(def: CaseDef): string {
   if (def.group) return def.group
-  const st = caseState(def.algs[0])
+  const st = canonicalView(def.algs[0]).state
   if (def.expect === 'oll') {
     const p = ollPattern(st)
     return `Aristas: ${EDGE_SHAPE_LABEL[p.edges]} · ${p.unorientedCorners} esquinas torcidas`
@@ -23,7 +23,7 @@ export function groupOf(def: CaseDef): string {
 }
 
 export function CaseCard({ r }: { r: CaseRef }) {
-  const st = useMemo(() => caseState(r.def.algs[0]), [r])
+  const st = useMemo(() => canonicalView(r.def.algs[0]).state, [r])
   return (
     <article className="card case-card">
       <a className="case-link" href={`#/${r.stage}/${r.code}`}>
