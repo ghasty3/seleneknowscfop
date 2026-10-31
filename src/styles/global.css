@@ -506,6 +506,17 @@ table.rank td.time {
   color: var(--accent-strong);
 }
 
+/* Oculta visualmente el texto que solo es para lectores de pantalla (Star, iconos). */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- fichas de caso ---------- */
 .case-card {
   display: flex;
@@ -724,6 +735,9 @@ section { margin-bottom: 30px; }
 .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Rejilla de fichas que se autosajusta: nunca una columna por debajo de 230 px, así el
+   nombre y el algoritmo caben enteros dentro de la ficha. */
+.grid.auto { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
 .detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 420px); gap: 16px; align-items: start; }
 .detail-rail { position: sticky; top: 74px; display: grid; gap: 12px; z-index: 2; }
 .player-panel { border-top: 2px solid var(--accent-dim); }
@@ -806,8 +820,18 @@ input[type="range"] { accent-color: var(--accent-strong); }
 .cube3d .bodyface { pointer-events: none; }
 
 /* --- index de casos: compacto, una sola acción --- */
-.case-card { display: grid; gap: 10px; padding: 12px; }
-.case-link { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: center; color: inherit; }
+.case-card { display: grid; gap: 10px; padding: 12px; container-type: inline-size; overflow: visible; }
+/* La columna del diagrama se ajusta al dibujo (96 px): si se fija en 74 px el svg desborda
+   su celda y el nombre y el algoritmo se imprimen encima de las pegatinas. */
+.case-link { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 12px; align-items: center; color: inherit; }
+.case-link > svg, .case-link .diagram { max-width: 100%; height: auto; }
+/* Con columnas de 230 px (rejilla de 4 en pantalla de 1024) el algoritmo no cabía al lado del
+   diagrama: se cortaba por la izquierda. Si la ficha es estrecha, el diagrama va arriba y el
+   texto ocupa todo el ancho, que es lo que necesita una secuencia larga como R U2 R' U' ... */
+@container (max-width: 250px) {
+  .case-link { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .case-meta { min-width: 0; }
+}
 .case-meta { display: grid; gap: 4px; min-width: 0; }
 .case-meta h3 { font-size: 14.5px; }
 .case-meta .alg { font-size: 12px; color: var(--dim); overflow-wrap: anywhere; }
@@ -917,5 +941,23 @@ input[type="range"] { accent-color: var(--accent-strong); }
 
 @media (max-width: 620px) {
   .grid.cols-4 { grid-template-columns: minmax(0, 1fr); }
-  .case-link { grid-template-columns: 60px minmax(0, 1fr); }
+  .case-link { grid-template-columns: max-content minmax(0, 1fr); }
+}
+
+/* Móvil: la barra superior cabía en una sola fila si los grupos no obligan a partir.
+   La tira de pestañas se desplaza en horizontal; los rótulos Aprender/Practicar/Tuyo son
+   separadores visuales y se ocultan (el lector de pantalla sigue viendo el nav etiquetado). */
+@media (max-width: 620px) {
+  .topbar-inner, .topbar { gap: 10px; }
+  .brand { flex: 0 0 auto; padding: 8px 12px; }
+  .nav { flex: 1 1 auto; flex-wrap: nowrap; overflow-x: auto; gap: 14px; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-group { flex: 0 0 auto; gap: 12px; }
+  .nav-group + .nav-group { border-left: 0; padding-left: 0; }
+  .nav-kicker { display: none; }
+}
+/* Teléfono pequeño: los tres niveles con etiqueta larga no caben en una fila. */
+@media (max-width: 420px) {
+  .lvl { white-space: normal; padding: 8px 6px; font-size: 11.5px; }
+  .levelbar.compact .lvl { white-space: nowrap; }
 }

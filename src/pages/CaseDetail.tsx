@@ -146,7 +146,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
                 <h2>Alternativas</h2>
                 <span className="muted">elige la que te salga con un solo dedo</span>
               </div>
-              <div className="grid cols-2">
+              <div className="grid auto">
                 {def.algs.map((a, i) => (
                   <div className="panel" key={i}>
                     <AlgoPlayer alg={canon ? canon.play : a} startState={base ? cloneState(base) : undefined} loops={1} mirrored={mirrored} explain />
@@ -162,7 +162,7 @@ export default function CaseDetail({ stage, code }: { stage: StageKey; code: str
                 <h2>Del mismo grupo</h2>
                 <span className="muted">{groupOf(def)}</span>
               </div>
-              <div className="grid cols-4">
+              <div className="grid auto">
                 {family.slice(0, 4).map((r) => (
                   <CaseCard key={r.id} r={r} />
                 ))}
