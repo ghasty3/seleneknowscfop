@@ -15,3 +15,10 @@ npm-debug.log*
 .vercel
 coverage
 *.tsbuildinfo
+
+# Material de terceros con licencia restrictiva: los PDF originales no se versionan.
+# Solo se versionan los extractos que el proyecto necesita (ver README «Fuentes de los datos»).
+/*.pdf
+docs/pdf/
+docs/pdf-text/*-f2l.txt
+.impeccable/

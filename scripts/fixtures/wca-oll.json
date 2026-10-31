@@ -1,0 +1,615 @@
+[
+  {
+    "name": "O1",
+    "wca": 1,
+    "prob": "1/108",
+    "suggested": [
+      "(R U2') (R2' F R F') U2' (R' F R F')"
+    ],
+    "alt": [
+      "f (R U R' U') f' U' F (R U R' U') F'"
+    ]
+  },
+  {
+    "name": "O2",
+    "wca": 2,
+    "prob": "1/54",
+    "suggested": [
+      "F (R U R' U') F' f (R U R' U') f'",
+      "y (r U r') U2 R U2' R' U2 (r U' r')"
+    ],
+    "alt": [
+      "f (R U R' U') f' U F (R U R' U') F'"
+    ]
+  },
+  {
+    "name": "O3",
+    "wca": 3,
+    "prob": "1/54",
+    "suggested": [
+      "f (R U R' U') f' U' F (R U R' U') F'"
+    ],
+    "alt": [
+      "y R U2' (R2' F R F') U2' M' (U R U' r')"
+    ]
+  },
+  {
+    "name": "O4",
+    "wca": 4,
+    "prob": "1/54",
+    "suggested": [
+      "f (R U R' U') f' U F (R U R' U') F'"
+    ],
+    "alt": [
+      "M U (R U R' U') M' (R' F R F')"
+    ]
+  },
+  {
+    "name": "S1",
+    "wca": 5,
+    "prob": "1/54",
+    "suggested": [
+      "(r' U2' R U R' U r)"
+    ],
+    "alt": []
+  },
+  {
+    "name": "S2",
+    "wca": 6,
+    "prob": "1/54",
+    "suggested": [
+      "(r U2 R' U' R U' r')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "B1",
+    "wca": 7,
+    "prob": "1/54",
+    "suggested": [
+      "(r U R' U R U2' r')"
+    ],
+    "alt": [
+      "r' (R2 U R' U R U2 R') U M'"
+    ]
+  },
+  {
+    "name": "B2",
+    "wca": 8,
+    "prob": "1/54",
+    "suggested": [
+      "(r' U' R U' R' U2 r)",
+      "y2 l' U' L U' L' U2 l"
+    ],
+    "alt": [
+      "M' (R' U' R U' R' U2 R) U' M",
+      "y F (R U R' U') F' U F (R U R' U') F'"
+    ]
+  },
+  {
+    "name": "F1",
+    "wca": 9,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U') R' F (R2 U R' U') F'",
+      "(R' U' R) y r U' r' U r U r'"
+    ],
+    "alt": [
+      "(R U2') (R2' F R F') (R U2' R')"
+    ]
+  },
+  {
+    "name": "F2",
+    "wca": 10,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U) (R' F R F') (R U2' R')",
+      "(R U R') y (R' F R U') (R' F' R)"
+    ],
+    "alt": [
+      "F (R U' R' U') (R U R' F')"
+    ]
+  },
+  {
+    "name": "B3",
+    "wca": 11,
+    "prob": "1/54",
+    "suggested": [
+      "r' (R2 U R' U R U2 R') U M'"
+    ],
+    "alt": [
+      "(L F') (L' U' L U) F U' L'",
+      "F (R U R' U') F' (R' U' R U' R' U2 R)"
+    ]
+  },
+  {
+    "name": "B4",
+    "wca": 12,
+    "prob": "1/54",
+    "suggested": [
+      "M' (R' U' R U' R' U2 R) U' M",
+      "y F (R U R' U') F' U F (R U R' U') F'"
+    ],
+    "alt": [
+      "(R' F) (R U R' U') F' U R"
+    ]
+  },
+  {
+    "name": "K1",
+    "wca": 13,
+    "prob": "1/54",
+    "suggested": [
+      "(r U' r') (U' r U r') y' (R' U R)",
+      "F U R U' R2' F' R U (R U' R')"
+    ],
+    "alt": [
+      "(r U r') (R U R' U') (r U' r')"
+    ]
+  },
+  {
+    "name": "K2",
+    "wca": 14,
+    "prob": "1/54",
+    "suggested": [
+      "(R' F R) (U R' F' R) (F U' F')"
+    ],
+    "alt": [
+      "(r' U' r) (R' U' R U) (r' U r)"
+    ]
+  },
+  {
+    "name": "K3",
+    "wca": 15,
+    "prob": "1/54",
+    "suggested": [
+      "(r' U' r) (R' U' R U) (r' U r)"
+    ],
+    "alt": []
+  },
+  {
+    "name": "K4",
+    "wca": 16,
+    "prob": "1/54",
+    "suggested": [
+      "(r U r') (R U R' U') (r U' r')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "O5",
+    "wca": 17,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U) (R' F R F') U2' (R' F R F')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "O6",
+    "wca": 18,
+    "prob": "1/54",
+    "suggested": [
+      "y R U2' (R2' F R F') U2' M' (U R U' r')",
+      "(r U R' U R U2 r') (r' U' R U' R' U2 r)"
+    ],
+    "alt": [
+      "(R U R' U) (R' F R F') U2' (R' F R F')"
+    ]
+  },
+  {
+    "name": "O7",
+    "wca": 19,
+    "prob": "1/54",
+    "suggested": [
+      "M U (R U R' U') M' (R' F R F')"
+    ],
+    "alt": [
+      "M U (R U R' U') M2' (U R U' r')",
+      "(r U R' U') M2' (U R U' R') U' M'"
+    ]
+  },
+  {
+    "name": "O8",
+    "wca": 20,
+    "prob": "1/216",
+    "suggested": [
+      "M U (R U R' U') M2' (U R U' r')",
+      "(r U R' U') M2' (U R U' R') U' M'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "OCLL1",
+    "wca": 21,
+    "prob": "1/108",
+    "suggested": [
+      "(R U2 R') (U' R U R') (U' R U' R')",
+      "y (R U R' U) (R U' R' U) (R U2' R')"
+    ],
+    "alt": [
+      "(r U R' U') (r' F R F')",
+      "y (R U R D) (R' U' R D') R2'"
+    ]
+  },
+  {
+    "name": "OCLL2",
+    "wca": 22,
+    "prob": "1/54",
+    "suggested": [
+      "R U2' R2' U' R2 U' R2' U2' R"
+    ],
+    "alt": [
+      "y F' (r U R' U') r' F R",
+      "x (R' U R) D' (R' U' R) D x'"
+    ]
+  },
+  {
+    "name": "OCLL3",
+    "wca": 23,
+    "prob": "1/54",
+    "suggested": [
+      "R2 D (R' U2 R) D' (R' U2 R')",
+      "y2 R2' D' (R U2 R') D (R U2 R)"
+    ],
+    "alt": []
+  },
+  {
+    "name": "OCLL4",
+    "wca": 24,
+    "prob": "1/54",
+    "suggested": [
+      "(r U R' U') (r' F R F')",
+      "y (R U R D) (R' U' R D') R2'"
+    ],
+    "alt": [
+      "R2 D (R' U2 R) D' (R' U2 R')",
+      "y2 R2' D' (R U2 R') D (R U2 R)"
+    ]
+  },
+  {
+    "name": "OCLL5",
+    "wca": 25,
+    "prob": "1/54",
+    "suggested": [
+      "y F' (r U R' U') r' F R",
+      "x (R' U R) D' (R' U' R) D x'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "OCLL6",
+    "wca": 26,
+    "prob": "1/54",
+    "suggested": [
+      "R U2 R' U' R U' R'",
+      "y' R' U' R U' R' U2 R"
+    ],
+    "alt": [
+      "(R U2 R') (U' R U R') (U' R U' R')",
+      "y (R U R' U) (R U' R' U) (R U2' R')"
+    ]
+  },
+  {
+    "name": "OCLL7",
+    "wca": 27,
+    "prob": "1/54",
+    "suggested": [
+      "R U R' U R U2' R'",
+      "y' R' U2' R U R' U R"
+    ],
+    "alt": [
+      "R U2' R2' U' R2 U' R2' U2' R"
+    ]
+  },
+  {
+    "name": "E1",
+    "wca": 28,
+    "prob": "1/54",
+    "suggested": [
+      "(r U R' U') M (U R U' R')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "A1",
+    "wca": 29,
+    "prob": "1/54",
+    "suggested": [
+      "y (R U R' U') (R U' R') (F' U' F) (R U R')",
+      "M U (R U R' U')(R' F R F') M'"
+    ],
+    "alt": [
+      "(R U R' U R U2' R') F (R U R' U') F'"
+    ]
+  },
+  {
+    "name": "A2",
+    "wca": 30,
+    "prob": "1/54",
+    "suggested": [
+      "y' F U (R U2 R' U') (R U2 R' U') F'",
+      "y' (F R' F) (R2 U' R' U') (R U R') F2"
+    ],
+    "alt": [
+      "(R' U' R U' R' U2 R) F (R U R' U') F'",
+      "y (R' F R F') (R' F R F') (R U R' U') (R U R')"
+    ]
+  },
+  {
+    "name": "P1",
+    "wca": 31,
+    "prob": "1/54",
+    "suggested": [
+      "(R' U' F) (U R U' R') F' R"
+    ],
+    "alt": [
+      "y R' U' F' U F R",
+      "f' (L' U' L U) f"
+    ]
+  },
+  {
+    "name": "P2",
+    "wca": 32,
+    "prob": "1/54",
+    "suggested": [
+      "R U B' (U' R' U) (R B R')",
+      "S (R U R' U') (R' F R f')"
+    ],
+    "alt": [
+      "f (R U R' U') f'",
+      "y2 F (U R U' R') F'"
+    ]
+  },
+  {
+    "name": "T1",
+    "wca": 33,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U') (R' F R F')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "C1",
+    "wca": 34,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R2' U') (R' F R U) R U' F'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "F3",
+    "wca": 35,
+    "prob": "1/54",
+    "suggested": [
+      "(R U2') (R2' F R F') (R U2' R')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "W1",
+    "wca": 36,
+    "prob": "1/54",
+    "suggested": [
+      "(R' U' R U') (R' U R U) l U' R' U x",
+      "y2 (R U R' F') (R U R' U') (R' F R U') (R' F R F')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "F4",
+    "wca": 37,
+    "prob": "1/54",
+    "suggested": [
+      "F (R U' R' U') (R U R' F')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "W2",
+    "wca": 38,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U) (R U' R' U') (R' F R F')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "B5",
+    "wca": 39,
+    "prob": "1/54",
+    "suggested": [
+      "(L F') (L' U' L U) F U' L'",
+      "F (R U R' U') F' (R' U' R U' R' U2 R)"
+    ],
+    "alt": []
+  },
+  {
+    "name": "B6",
+    "wca": 40,
+    "prob": "1/54",
+    "suggested": [
+      "(R' F) (R U R' U') F' U R"
+    ],
+    "alt": []
+  },
+  {
+    "name": "A3",
+    "wca": 41,
+    "prob": "1/54",
+    "suggested": [
+      "(R U R' U R U2' R') F (R U R' U') F'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "A4",
+    "wca": 42,
+    "prob": "1/54",
+    "suggested": [
+      "(R' U' R U' R' U2 R) F (R U R' U') F'",
+      "y (R' F R F') (R' F R F') (R U R' U') (R U R')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "P3",
+    "wca": 43,
+    "prob": "1/54",
+    "suggested": [
+      "y R' U' F' U F R",
+      "f' (L' U' L U) f"
+    ],
+    "alt": []
+  },
+  {
+    "name": "P4",
+    "wca": 44,
+    "prob": "1/54",
+    "suggested": [
+      "f (R U R' U') f'",
+      "y2 F (U R U' R') F'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "T2",
+    "wca": 45,
+    "prob": "1/54",
+    "suggested": [
+      "F (R U R' U') F'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "C2",
+    "wca": 46,
+    "prob": "1/54",
+    "suggested": [
+      "R' U' (R' F R F') U R"
+    ],
+    "alt": []
+  },
+  {
+    "name": "L1",
+    "wca": 47,
+    "prob": "1/54",
+    "suggested": [
+      "F' (L' U' L U) (L' U' L U) F",
+      "R' U' (R' F R F') (R' F R F') U R"
+    ],
+    "alt": [
+      "r' U r2 U' r2' U' r2 U r'",
+      "y' (R U2 R' U' R U' R') F (R U R' U') F'"
+    ]
+  },
+  {
+    "name": "L2",
+    "wca": 48,
+    "prob": "1/54",
+    "suggested": [
+      "F (R U R' U') (R U R' U') F'"
+    ],
+    "alt": [
+      "r U' r2' U r2 U r2' U' r"
+    ]
+  },
+  {
+    "name": "L3",
+    "wca": 49,
+    "prob": "1/54",
+    "suggested": [
+      "r U' r2' U r2 U r2' U' r"
+    ],
+    "alt": [
+      "(r' U' R U') (R' U R U') R' U2 r",
+      "y r' U2' R (U R' U' R) (U R' U r)"
+    ]
+  },
+  {
+    "name": "L4",
+    "wca": 50,
+    "prob": "1/54",
+    "suggested": [
+      "r' U r2 U' r2' U' r2 U r'",
+      "y' (R U2 R' U' R U' R') F (R U R' U') F'"
+    ],
+    "alt": [
+      "(r U R' U) (R U' R' U) R U2' r'",
+      "y' (r U2 R' U') (R U R' U') R U' r'"
+    ]
+  },
+  {
+    "name": "I1",
+    "wca": 51,
+    "prob": "1/54",
+    "suggested": [
+      "f (R U R' U') (R U R' U') f'",
+      "y2 F (U R U' R') (U R U' R') F'"
+    ],
+    "alt": [
+      "(R' U' R U' R' U) y' (R' U R) B",
+      "(R U R' U R U') y (R U' R') F'"
+    ]
+  },
+  {
+    "name": "I2",
+    "wca": 52,
+    "prob": "1/54",
+    "suggested": [
+      "(R' U' R U' R' U) y' (R' U R) B",
+      "(R U R' U R U') y (R U' R') F'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "L5",
+    "wca": 53,
+    "prob": "1/54",
+    "suggested": [
+      "(r' U' R U') (R' U R U') R' U2 r",
+      "y r' U2' R (U R' U' R) (U R' U r)"
+    ],
+    "alt": []
+  },
+  {
+    "name": "L6",
+    "wca": 54,
+    "prob": "1/54",
+    "suggested": [
+      "(r U R' U) (R U' R' U) R U2' r'",
+      "y' (r U2 R' U') (R U R' U') R U' r'"
+    ],
+    "alt": []
+  },
+  {
+    "name": "I3",
+    "wca": 55,
+    "prob": "1/108",
+    "suggested": [
+      "y (R' F R U) (R U' R2' F') R2 U' R' (U R U R')"
+    ],
+    "alt": []
+  },
+  {
+    "name": "I4",
+    "wca": 56,
+    "prob": "1/108",
+    "suggested": [
+      "r' U' r (U' R' U R) (U' R' U R) r' U r"
+    ],
+    "alt": [
+      "y (R' F R U) (R U' R2' F') R2 U' R' (U R U R')"
+    ]
+  },
+  {
+    "name": "E2",
+    "wca": 57,
+    "prob": "1/108",
+    "suggested": [
+      "(R U R' U') M' (U R U' r')"
+    ],
+    "alt": []
+  }
+]

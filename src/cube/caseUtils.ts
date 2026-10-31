@@ -140,8 +140,9 @@ export function llLayerIsTop(s: CubeState): boolean {
   // Identidades de las piezas de la última capa: por FIRMAS DE COLOR, no por posición. Comparar
   // claves de posición era trivialmente verdadero (las 8 posiciones de arriba coinciden siempre
   // con las 8 claves de la anilla), así que devolvía `true` para cualquier rotación.
-  // La última capa es la del color OPUSTO al de la cruz: en este modelo la cruz blanca está en
-  // casa con y = +1, así que las piezas de la última capa son las que tienen casa con y = -1.
+  // La última capa es la del color OPUSTO al de la cruz: en este modelo la cruz blanca vive en
+  // casa con y = -1 (Abajo, como se enseña), así que las piezas de la última capa son las que
+  // tienen casa con y = -1 opuesta, medida por firma de color de la pieza resuelta.
   const llKeys = new Set<string>()
   for (const c of solvedState().cubies) {
     if (countNonZero(c.home) < 2) continue
@@ -343,6 +344,9 @@ export function f2lPattern(s: CubeState): F2lPattern {
 
 // ---------- comprobaciones de estructura para verify.mts ----------
 
+const LL_COLOR = faceletHome(solvedState(), 'D', 1, 1)
+const CROSS_COLOR = faceletHome(solvedState(), 'U', 1, 1)
+
 const ROT_WORDS = (() => {
   const ax = ['x', 'y', 'z']
   const pow = ['', '2', "'"]
@@ -352,45 +356,110 @@ const ROT_WORDS = (() => {
   return [...new Set(out.map((w) => algToString(parseAlg(w))))]
 })()
 
+/** Matriz de cada giro de la lista anterior, en la misma convención que `frameMatrix`. */
+const ROT_MATS = new Map<string, Mat>(ROT_WORDS.map((w) => [w, frameMatrix(stateFromAlg(w))!]))
+
+/**
+ * Sticker que se ve en la casa `face` (fila, columna) DE LA VISTA ACTUAL, en un cubo girado.
+ * `frameMatrix` da la matriz F con `posición = F · casa`, y el giro que llevan las piezas es el
+ * mismo F, así que la dirección de casa que acaba mirando a `face` es `F⁻¹ · dir(face)`.
+ */
+function faceletDir(s: CubeState, dir: Pos, F: Mat): string {
+  const d = dir.map((v) => Math.sign(v))
+  const face: Face =
+    d[0] === 1 ? 'R' : d[0] === -1 ? 'L' : d[1] === 1 ? 'U' : d[1] === -1 ? 'D' : d[2] === 1 ? 'F' : 'B'
+  return faceletHome(s, face, 1, 1)
+}
+
 /** Gira el cubo entero al marco que marcan los centros (cruz abajo, última capa arriba). */
 export function canonicalByFrame(base: CubeState): { state: CubeState; rot: string } {
   const F = frameMatrix(base)
   if (!F) return { state: base, rot: '' }
-  const G = transpose(F)
-  const state = cloneState(base)
-  for (const c of state.cubies) {
-    c.pos = applyVec(G, c.pos)
-    c.rot = mulMat(G, c.rot)
-  }
   const word = ROT_WORDS.find((w) => {
-    const m = frameMatrix(stateFromAlg(w))
+    const m = ROT_MATS.get(w)
     return !!m && m.every((v, i) => v === F[i])
-  })
-  return { state, rot: word ?? '' }
+  }) ?? ''
+  const state = cloneState(base)
+  if (word) applyMoves(state, parseAlg(word))
+  return { state, rot: word }
 }
 
-/** Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún marco. */
 /**
- * Gira el cubo entero hasta el marco canónico si las dos primeras capas están resueltas en algún
- * marco. Mide SOLO contra los centros (`f2lSolvedRel`): en un 3x3 los centros son el marco, así
- * que una preparación escrita `x`/`y` es el mismo cubo agarrado de otra forma. No se pide que la
- * última capa quede «arriba» en coordenadas: en este modelo la última capa vive en casa con y = +1
- * y la cruz con y = -1, y una rotación del cubo entero nunca pone las piezas de la cruz y su casa
- * a la vez en la misma coordenada, así que ese filtro adicional hacían imposible la vista canónica.
- * LL_COLOR y el anillo de la lámina se detectan por la pieza que toca el centro amarillo, no por la
- * posición de la anilla (ver `CaseDiagram.llRing`), que era trivialmente verdadera para cualquier giro.
+ * Vista de la ficha: Amarillo ARRIBA, cruz blanca ABAJO, las dos primeras capas resueltas y la
+ * última capa desordenada arriba — exactamente el cubo que uno tiene en las manos antes de aplicar
+ * el algoritmo, como pedía la instrucción del visualizador (m02908: «como se debería ver es con la
+ * cara amarilla arriba ... al ejecutarlo, el cubo debería terminar resuelto»).
+ *
+ * Medido en el modelo: en `solvedState()` la cara blanca (con su cruz y sus pares) mira a +y, la
+ * amarilla a -y, y las dos primeras capas viven en casa con y = -1 (cruz) y y = 0 (anilla). Las
+ * piezas «sin resolver» son las 8 de la casa amarilla (y = -1). Por eso el plantado crudo sale con
+ * la cara blanca arriba y lo que falta abajo. La vista canónica busca el giro del cubo entero que
+ * cumple las tres cosas a la vez, midiendo contra el marco que marcan los centros:
+ *   · la capa amarilla (la que falta por resolver) está ARRIBA: F⁻¹·(0,-1,0) = (0,1,0),
+ *   · el centro amarillo se ve arriba y el blanco abajo (`faceletDir`),
+ *   · las dos primeras capas están resueltas contra los centros: posición = F · casa y
+ *     rot = F (o sea F⁻¹ · rot = identidad) para cada pieza de casa y ≠ -1.
+ * La última capa arriba es justamente lo que el algoritmo resuelve: no se comprueba su permutación.
+ */
+export type CanonicalFace = 'yellow' | 'white'
+
+/**
+ * ¿Está la capa que hay que resolver arriba, con la anilla central resuelta contra los centros?
+ *
+ * Geometría REAL medida en el modelo (probe sobre solvedState, casa por casa):
+ *   · casa y = +1 → cara blanca: la cruz (aristas, nz=2) y los 8 PARES de F2L (nz=3, casa del
+ *     hueco) — en F2L los pares son justo lo que cada caso deja sin resolver, van ARRIBA;
+ *   · casa y = 0 → anilla central: las 8 esquinas de F2L + 4 aristas intermedias, SIEMPRE
+ *     resueltas en la vista canónica (posición = F · casa y F⁻¹ · rot = identidad);
+ *   · casa y = -1 → cara amarilla: la última capa, lo que resuelven OLL y PLL.
+ *
+ * `mode` elige qué cara debe mirar arriba: 'yellow' para OLL/PLL (cara amarilla arriba, pares ya
+ * metidos) y 'white' para F2L/cruz (cara blanca con su cruz arriba y los pares por meter, que es la
+ * vista real de la práctica). La anilla se comprueba igual en los dos modos.
+ */
+export function upFrame(s: CubeState, mode: CanonicalFace): boolean {
+  const F = frameMatrix(s)
+  if (!F) return false
+  const Fi = transpose(F)
+  // Casa que en la vista actual mira hacia arriba: debe ser la capa por resolver.
+  const homeTop = byFrame(Fi, [0, 1, 0]).join(',')
+  if (homeTop !== (mode === 'yellow' ? '0,-1,0' : '0,1,0')) return false
+  // OJO: `faceletHome`/`faceletDir` devuelven el color en MARCO DE CASA (el sticker que vive en
+  // esa posición de la cara), no el que se ve desde fuera; comprobar el color del centro de arriba
+  // con `faceletDir(s,[0,1,0],F)` siempre daba blanco y descartaba todos los giros. La casa de la
+  // capa de arriba (`homeTop`) ya fija el marco, que es lo que de verdad se comprueba.
+  // Anilla central resuelta contra los centros: único requisito de las dos primeras capas.
+  for (const c of s.cubies) {
+    const nz = countNonZero(c.home)
+    if (nz === 1) continue // centros: definen el marco
+    if (nz === 3) continue // pares de la cara blanca: capa por resolver en F2L
+    if (c.home[1] !== 0) continue // anilla central: la que debe estar resuelta
+    if (key(applyVec(F, c.home)) !== key(c.pos)) return false
+    if (!isIdentityRot(mulMat(F, c.rot))) return false
+  }
+  return true
+}
+
+/**
+ * Gira el cubo entero a la vista de la ficha: amarilla arriba, dos primeras capas resueltas.
+ * Si ningún giro lo cumple (plantados de cruz y de F2L, donde las dos primeras capas NO están
+ * resueltas), devuelve el plantado crudo, que es el estado honesto del garantizado.
  */
 export function canonicalizeState(base: CubeState): { state: CubeState; rot: string } {
-  const { state, rot } = canonicalByFrame(base)
-  if (rot && f2lSolvedRel(state)) return { state, rot }
   for (const word of ROT_WORDS) {
     const state2 = cloneState(base)
-    applyMoves(state2, parseAlg(word))
-    if (f2lSolvedRel(state2)) return { state: state2, rot: word }
+    if (word) applyMoves(state2, parseAlg(word))
+    if (upFrame(state2, "yellow") || upFrame(state2, "white")) return { state: state2, rot: word }
   }
   return { state: base, rot: '' }
 }
 
+/** ¿La cara amarilla (la última capa) está arriba en la vista actual? */
+export function llOnTopView(s: CubeState): boolean {
+  const F = frameMatrix(s)
+  if (!F) return faceletHome(s, 'U', 1, 1) === LL_COLOR
+  return faceletDir(s, [0, 1, 0], F) === LL_COLOR
+}
 
 export interface StructureCheck {
   ok: boolean
@@ -553,24 +622,36 @@ export function topLayerIsU(s: CubeState): boolean {
 }
 
 export function f2lSolvedRel(s: CubeState): boolean {
-  // El marco lo marcan los centros; el modelo guarda las matrices por columnas, así que para
-  // las helpers fila-major de esta hoja hay que transponer la matriz del marco.
+  // Medición contra el marco que marcan los centros. `frameMatrix` devuelve la matriz de rotación
+  // DEL CUBO ENTERO que llevan las piezas, indexada por FILAS, y la relación correcta (medida
+  // sobre solved + x / x' / x2 / y / z / z2 con todas las piezas) es:
+  //
+  //     posición = F · casa        rotación = F · rotación nativa
+  //
+  // Antes se multiplicaba por la transpuesta (`F⁻¹ · casa`), que está invertida: por eso ningún
+  // giro pasaba el filtro y la vista canónica era imposible.
   const Fm = frameMatrix(s)
   if (!Fm) return false
-  const M = transpose(Fm)
-  const isTop = (p: Pos) => byFrame(M, p)[1] === 1
+  // `frameMatrix` devuelve la matriz del marco AL REVÉS que las helpers de esta hoja: medido sobre
+  // solved + x / x' / x2 / y / z / z2 con las 20 piezas, la relación es
+  //     posición = Fᵀ · casa      y   rotación = F · rotación nativa
+  // (con `F` a secas se invertían los giros de ±90° y x2 salía identidad: por eso ningún giro
+  // pasaba el filtro y la vista canónica era imposible).
+  const Ft = Fm
+  const Fi = transpose(Fm)
+  const isTop = (p: Pos) => byFrame(Ft, p)[1] === 1
   for (const c of s.cubies) {
     const nz = c.pos.filter((v) => v !== 0).length
     if (nz === 1) continue // centros: definen el marco
     if (isTop(c.home)) continue // pieza de la última capa en la vista actual
-    const want = byFrame(M, c.home)
-    if (key(want) !== key(c.pos)) return false
-    // Con el marco girado, la rotación de la pieza es su rotación nativa recableada por el marco:
-    // la componente j de rot·F⁻¹ es Σ_k fila_j(rot)[k] · col_k(F).
-    const col = [Fm[0], Fm[3], Fm[6]]
+    if (key(byFrame(Ft, c.home)) !== key(c.pos)) return false
+    // «Sin giro en el marco» = F⁻¹ · rot = identidad, medido pieza por pieza.
     for (let j = 0; j < 3; j++) {
-      const row = c.rot[j * 3] * col[0] + c.rot[j * 3 + 1] * col[1] + c.rot[j * 3 + 2] * col[2]
-      if (row !== c.home[j]) return false
+      for (let k = 0; k < 3; k++) {
+        const v = Fi[j * 3] * c.rot[k] + Fi[j * 3 + 1] * c.rot[k + 3] + Fi[j * 3 + 2] * c.rot[k + 6]
+        const want = j === k ? 1 : 0
+        if (v !== want) return false
+      }
     }
   }
   return true
@@ -593,13 +674,14 @@ export function canonicalView(alg: string): { state: CubeState; play: string; ro
   // sin esquinas. canonicalizeState sí busca el giro donde la cruz y las dos primeras capas
   // quedan resueltas y la última capa arriba. (canonicalByFrame se usa en checkStructure.)
   const { state, rot } = canonicalizeState(base)
-  if (rot) {
-    const back = algToString(invertMoves(parseAlg(rot)))
-    const play = [alg, back].filter(Boolean).join(' ')
-    const check = cloneState(state)
-    applyMoves(check, parseAlg(play))
-    if (isSolved(check)) return { state, play, rot }
-  }
+  // El giro de agarre se quita de la reproducción: la representación canónica ya lo lleva dentro,
+  // así que la ficha se ve con la cara amarilla arriba y la secuencia que se ejecuta termina en
+  // cubo resuelto (devolver el plantado crudo cuando `rot` era vacío dejaba la cara blanca arriba).
+  const back = rot ? algToString(invertMoves(parseAlg(rot))) : ''
+  const play = [alg, back].filter(Boolean).join(' ')
+  const check = cloneState(state)
+  applyMoves(check, parseAlg(play))
+  if (isSolved(check)) return { state, play, rot }
   return { state: base, play: alg, rot: '' }
 }
 

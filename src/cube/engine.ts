@@ -9,6 +9,10 @@ export interface Move {
   axis: Axis
   layers: Layers
   dir: 1 | -1 // -1 = -90° (horario visto desde esa cara)
+  turns?: 1 | 2 | 3 // 2 = media vuelta en UN paso; 3 = tres cuartos (= prima). Medido: con
+  // `R2 => R + R'` y `x2 => x + x'` la media vuelta salía IDENTIDAD para las rotaciones de cubo
+  // completo (los centros no se movían, `x2` no existía de hecho) y por eso la última capa se
+  // quedaba abajo en la vista 3D. Ahora cada letra es un solo movimiento con su ángulo.
   half?: boolean // true si es el segundo cuarto de un "R2" (para pintar la notación)
   secondOf?: string // notación del "R2" del que forma parte
   rot?: 'x' | 'y' | 'z' // rotación de cubo completo (no cambia el estado relativo)
@@ -71,11 +75,18 @@ export const mulMat = mul
 
 export function applyMove(s: CubeState, m: Move): void {
   const M = mat(m.axis, m.dir)
-  for (const c of s.cubies) {
-    const idx = m.axis === 'x' ? 0 : m.axis === 'y' ? 1 : 2
-    if (!m.layers.includes(c.pos[idx])) continue
-    c.pos = apply3(M, c.pos)
-    c.rot = mul(M, c.rot)
+  const idx = m.axis === 'x' ? 0 : m.axis === 'y' ? 1 : 2
+  // CRÍTICO: la capa se evalúa sobre la posición ORIGINAL de todas las piezas. Si se lee la
+  // posición ya girada dentro del bucle, `x2` sobre `layers: ALL` deja de mover las capas que
+  // no son la del eje (medido: los centros y las capas Y/Z se quedaban quietas, `x2` salía
+  // identidad de marco y la última capa se quedaba abajo en la vista 3D).
+  const t = m.turns ?? 1
+  const M2 = mul(M, M)
+  const full = t === 2 ? M2 : t === 3 ? mul(M2, M) : M
+  const targets = s.cubies.filter((c) => m.layers.includes(c.pos[idx]))
+  for (const c of targets) {
+    c.pos = apply3(full, c.pos)
+    c.rot = mul(full, c.rot)
   }
 }
 
@@ -161,8 +172,14 @@ export const MOVE_SPECS: Record<string, Spec> = {
   B: { axis: 'z', layers: [-1], dir: 1 },
   b: { axis: 'z', layers: [-1, 0], dir: 1 },
   S: { axis: 'z', layers: [0], dir: -1 },
-  x: { axis: 'x', layers: ALL, dir: -1, cubeRot: 'x' },
-  y: { axis: 'y', layers: ALL, dir: -1, cubeRot: 'y' },
+  // Rotaciones del cubo entero en NOTACIÓN ESTÁNDAR, medida sobre solved + cada letra con la
+  // matriz del marco que devuelven los centros: `x` = [1,0,0, 0,0,-1, 0,1,0] (F→D→B→U, la forma
+  // normal de agarrar con la cruz arriba), `y` = [0,0,1, 0,1,0, -1,0,0] (capa superior girando
+  // en sentido horario visto de arriba), `z` = [0,-1,0, 1,0,0, 0,0,1]. Con `dir: -1` salían
+  // `x` = media vuelta, `y` = y' y `z` correcta: media notación de preparación escrita en las
+  // fichas no era lo que se ejecutaba, y por eso la vista canónica era imposible.
+  x: { axis: 'x', layers: ALL, dir: 1, cubeRot: 'x' },
+  y: { axis: 'y', layers: ALL, dir: 1, cubeRot: 'y' },
   z: { axis: 'z', layers: ALL, dir: -1, cubeRot: 'z' },
 }
 
@@ -192,18 +209,15 @@ export function parseAlg(alg: string): Move[] {
     }
     if (rest.length) throw new Error(`Movimiento no soportado: "${tok}"`)
     if (prime % 2) dir = dir === 1 ? -1 : 1
-    const turns = half ? 2 : 1
-    for (let i = 0; i < turns; i++) {
-      moves.push({
-        id: turns === 2 ? tok : i === 0 ? tok : '',
-        axis: spec.axis,
-        layers: spec.layers,
-        dir: i === 0 ? dir : (dir === 1 ? -1 : 1),
-        half: turns === 2 && i === 1,
-        secondOf: turns === 2 && i === 1 ? tok : undefined,
-        rot: spec.cubeRot,
-      })
-    }
+    const turns: 1 | 2 | 3 = half ? 2 : prime % 2 ? 3 : 1
+    moves.push({
+      id: tok,
+      axis: spec.axis,
+      layers: spec.layers,
+      dir,
+      turns,
+      rot: spec.cubeRot,
+    })
   }
   return moves
 }
@@ -211,7 +225,7 @@ export function parseAlg(alg: string): Move[] {
 export function invertMoves(moves: Move[]): Move[] {
   const inv = [...moves]
     .reverse()
-    .map((m) => ({ ...m, id: '', dir: (m.dir === 1 ? -1 : 1) as 1 | -1, half: false, secondOf: undefined }))
+    .map((m) => ({ ...m, id: '', turns: (((4 - (m.turns ?? 1)) % 4) || 4) as 1 | 2 | 3, half: false, secondOf: undefined }))
   const ids = algToString(inv).split(' ')
   inv.forEach((m, i) => {
     m.id = ids[i] || m.id
