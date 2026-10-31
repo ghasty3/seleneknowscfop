@@ -26,7 +26,7 @@ export function CaseCard({ r }: { r: CaseRef }) {
   const st = useMemo(() => canonicalView(r.def.algs[0]).state, [r])
   return (
     <article className="card case-card">
-      <a className="case-link" href={`#/${r.stage}/${r.code}`}>
+      <a className="case-link" href={`#/${r.stage}/${r.code}`} aria-label={r.def.name}>
         <CaseDiagram state={st} markers={caseMarkers(r.def, st)} mode={modeFor(r.def)} size={96} label={`Estado inicial de ${r.def.name}`} />
         <div className="case-meta">
           <h3>{r.def.name}</h3>
