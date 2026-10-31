@@ -22,3 +22,6 @@ coverage
 docs/pdf/
 docs/pdf-text/*-f2l.txt
 .impeccable/
+
+# Carpeta de trabajo temporal (capturas, probes, PDF extraído)
+tmp/

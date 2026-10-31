@@ -11,7 +11,10 @@
     "verify": "tsx scripts/verify.mts",
     "verify:wca": "tsx scripts/check-wca-oll.mts",
     "verify:verbose": "tsx scripts/verify.mts --verbose",
-    "test": "npm run typecheck && npm run verify && npm run verify:wca"
+    "test": "npm run typecheck && npm run verify && npm run verify:wca && npm run verify:refs && npm run verify:cube",
+    "docs": "tsx scripts/docs-casos.mts",
+    "verify:refs": "tsx scripts/check-refs.mts",
+    "verify:cube": "tsx scripts/check-cube-algebra.mts"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.10",

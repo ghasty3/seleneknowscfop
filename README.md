@@ -10,6 +10,9 @@ cubo resuelto.
 - Especificación completa (requisitos RF-1..RF-12, decisiones técnicas, fases): **[project.md](./project.md)**
 - Fuentes y transcripciones en bruto (imágenes, tablas, enlaces): **[docs/fuentes.md](./docs/fuentes.md)**
 - Revisión medida del repo y contenido de los PDF (2026-10-31): **[docs/REVISION-2026-10-31.md](./docs/REVISION-2026-10-31.md)**
+- Estado medido y defectos conocidos, con su reproducción: **[docs/defectos.md](./docs/defectos.md)**
+- Catálogo de las fichas de `src/data/`, generado por `npm run docs`: **[docs/casos.md](./docs/casos.md)** y **[docs/notacion.md](./docs/notacion.md)**
+- Tabla OLL de Zemdegs y Klise (contenido del PDF extraído): **[docs/referencias/oll-zemdegs-klise.md](./docs/referencias/oll-zemdegs-klise.md)**
 - Registro de instrucciones de la persona con su referencia de mensaje: **[instructionsIRIS.md](./instructionsIRIS.md)**
 
 ## Estado actual (medido el 2026-10-31)
@@ -20,12 +23,17 @@ centros, de la que depende la vista canónica (RF-2 y la instrucción de "amaril
 
 | Comprobación | Resultado |
 |---|---|
-| `npm run typecheck` | verde |
+| `npm run typecheck` | verde (salida 0) |
 | `npm run build` | verde (`dist/`) |
-| `npm run verify` | **111 fichas, 0 fallos duros** · 73 pasan todo · 38 avisos de prerequisito |
-| `npm run verify:wca` (gate de la lámina WCA) | **rojo hoy por diseño**: 0 de 48 plantados OLL con F2L resuelto (deberían ser 48) |
+| `npm run verify` | verde: **74 de 111** fichas cierran su plantado · **37 avisos de prerequisito** |
+| `npm run verify:refs` | verde: las imágenes de referencia existen y ninguna está compartida |
+| `npm run verify:wca` | **rojo**: parser OK, 128/128 cierran, y **44 de 48** plantados de última capa llegan con las dos primeras capas resueltas (deberían ser 48) |
+| `npm run verify:cube` | **rojo**: **9 hechos** del cubo real no los reproduce el motor |
 | `.github/workflows/deploy.yml` (RF-12) | no existe todavía |
 | Tests unitarios | no hay fichero de tests del motor; la verificación son los `scripts/` |
+
+El detalle de cada puerta, los 9 hechos que fallan y su lectura están en
+**[docs/defectos.md](./docs/defectos.md)**.
 
 ### Lo que está construido
 
@@ -37,7 +45,7 @@ centros, de la que depende la vista canónica (RF-2 y la instrucción de "amaril
 | Cubo 3D (`src/components/Cube3D.tsx`) | ✅ proyección isométrica, colores por cara, pegatinas interactivas |
 | Cubo manipulable (`src/components/InteractiveCube.tsx`) | ✅ arrastrar una pegatina gira su capa, clic = cara entera, arrastrar el fondo gira la vista, teclado `R U F B L D`, deshacer, plantar/remover, play-along, modo cruces |
 | Reproductor de algoritmo (`src/components/AlgoPlayer.tsx`) | ✅ animación movimiento a movimiento, velocidad, bucle, paso a paso, fase de preparación |
-| Diagrama 2D del caso (`src/components/CaseDiagram.tsx`) | ✅ redes planas con marcadores |
+| Diagrama 2D del caso (`src/components/CaseDiagram.tsx`) | ✅ diagrama procedimental por modo (`auto\|oll\|pll\|f2l`): cara arriba con las pegatinas amarillas/blancas y flechas de permutación; **no usa las imágenes de `public/ref/`** |
 | Notación interactiva (`src/pages/Notation.tsx`) | ✅ símbolos que animan su movimiento + leyenda de dedos |
 | Páginas (`src/pages/`) | ✅ `Home`, `Method`, `Notation`, `StagePage`, `CaseDetail`, `Practice`, `Trainer`, `Algs`, `Reference`, `Mirror`, `Clock`, `Times` |
 | Datos (`src/data/`) | ✅ `cross.ts` 6, `f2l.ts` 21, `oll.ts` 53, `pll.ts` 21, `look2.ts` 5, `pll.gan.ts` 17 |
@@ -53,16 +61,24 @@ centros, de la que depende la vista canónica (RF-2 y la instrucción de "amaril
 ## Arranque
 
 ```bash
-npm install
+npm install --include=dev   # imprescindible: con NODE_ENV=production npm omite las devDependencies
 npm run dev        # http://localhost:5173
 npm run typecheck  # tsc -b
 npm run verify     # comprueba las 111 fichas en el motor
 npm run verify:wca # gate de la lámina oficial de OLL (rojo hasta cerrar la Fase 0)
-npm test           # typecheck + verify + verify:wca
+npm run verify:cube # gate de hechos del cubo real (rojo: 9 hechos)
+npm run verify:refs # gate de las imágenes de referencia de los casos
+npm run docs       # regenera docs/casos.md y docs/notacion.md desde src/data/
+npm test           # typecheck + verify + verify:wca + verify:refs + verify:cube
 npm run build      # dist/ (publicable en GitHub Pages)
 ```
 
-`NODE_ENV` no puede estar en `production` al instalar dependencias (Vite requiere `esbuild`).
+`npm install` a secas deja el proyecto sin `vite`, `typescript` y `tsx` cuando
+`NODE_ENV=production` (npm responde «up to date» y omite las devDependencies;
+míralo con `npm config get omit`). Sin `--include=dev` fallan `npm run dev`,
+`typecheck`, `verify` y `build`, y `npx tsx …` funciona solo porque npx
+descarga tsx cada vez. `npx tsc` no sirve: instala un paquete npm de nombre
+`tsc` que no es TypeScript.
 
 ## Verificación
 
@@ -70,8 +86,9 @@ npm run build      # dist/ (publicable en GitHub Pages)
 
 - **Obligatorios** (fallan): cada algoritmo publicado cierra su plantado
   (`plantado + alg = cubo resuelto`), ningún plantado es trivial, y los grupos de OLL cumplen lo que
-  prometen. Hoy: **0 fallos en 111 fichas** (Cross 6, F2L 21, OLL 53, PLL 21, 1-look 2, PLL de reloj 8).
-- **Avisos de prerequisito**: 38 fichas avisan (se listan con `npm run verify -- --verbose`). Son
+  prometen. Hoy: **0 fallos duros en 111 fichas** y **74 que pasan todo** (Cross 6, F2L 21, OLL 53,
+  PLL 21, 1-look 2, PLL de reloj 8).
+- **Avisos de prerequisito**: 37 fichas avisan (se listan con `npm run verify:verbose`). Son
   investigación abierta, no datos malos:
   1. Algoritmos PLL que mueven piezas fuera de la última capa en cualquier conjugación por
      `x`/`y`/`z` (20 fichas). La permutación declarada y el cierre del plantado sí cuadran.
@@ -85,10 +102,35 @@ oficial de OLL (ver *Fuentes*). Comprueba tres cosas sobre los 57 casos / 128 al
    Hoy: **0 fallos**.
 2. `plantado + alg = cubo resuelto` en el plantado `inverse(alg)`. Hoy: **128 de 128**.
 3. Los 48 algoritmos que no rotan el cubo dejan las **dos primeras capas resueltas** en su plantado
-   (es matemáticamente forzoso). Hoy: **0 de 48** → el gate está en rojo y ahí está el defecto a cerrar.
+   (es matemáticamente forzoso). Comprobación 3a, «el algoritmo de última capa no toca F2L»:
+   **48 de 48**. Comprobación 3b, «la anilla central llega resuelta al plantar»:
+   **44 de 48** → el gate sigue rojo y ahí está el defecto a cerrar.
 
-Herramientas: `scripts/verify.mts`, `scripts/check-wca-oll.mts`, `scripts/contrast.mts`,
+`npm run verify:cube` (`scripts/check-cube-algebra.mts`) contrasta el motor con **31 hechos del cubo
+real** (órdenes de caras y cortes, inversos, identidades, equivalencias `x = R M' L'`, comportamiento
+del Sune, del 338 y de la pareja F2L). Hoy: **22 verdes, 9 rojos**; la lista literal está en
+`docs/defectos.md`.
+
+`npm run verify:refs` (`scripts/check-refs.mts`) comprueba las imágenes de referencia: toda ruta `ref`
+debe existir en `public/` y dos casos de la misma etapa no pueden compartir imagen. Informa además de
+los números que no coinciden con el código del caso.
+
+Herramientas: `scripts/verify.mts`, `scripts/check-wca-oll.mts`, `scripts/check-cube-algebra.mts`,
+`scripts/check-refs.mts`, `scripts/docs-casos.mts`, `scripts/contrast.mts`,
 `scripts/build-cases.mts`, `scripts/extract-wca-oll.mjs`, `scripts/fixtures/{cubzor-oll,cubzor-pll,wca-oll}.json`.
+
+## Documentación generada
+
+`npm run docs` (`scripts/docs-casos.mts`) lee `src/data/` y escribe:
+
+- **`docs/casos.md`** — 713 líneas, 106 fichas con grupo, lectura, consejos, estado esperado,
+  probabilidad, algoritmos y notas: Cruz 6, F2L 21, OLL en dos miradas 5, OLL 53, PLL 21. Es el mismo
+  material que muestra la web, en formato editable.
+- **`docs/notacion.md`** — tabla de símbolos del motor (`src/data/notation.ts`) con su orden, su
+  inverso y su equivalencia en caras y cortes, más el generador de casos espejo (`mirrorAlg`).
+
+`docs/casos.md` y `docs/notacion.md` son **generados**: no se editan a mano; se regeneran con
+`npm run docs` al cambiar los datos.
 
 ## Fuentes de los datos
 
@@ -101,7 +143,7 @@ numeración GANCUBE 01..57 coincide con la WCA.
 
 | PDF del repo | Qué es | Extracto |
 |---|---|---|
-| `oll-algorithms.pdf` | Lámina oficial WCA de OLL 57 (fuente autoritativa) | `scripts/fixtures/wca-oll.json`, `docs/pdf-text/oll-algorithms.txt` |
+| `oll-algorithms.pdf` | Lámina oficial WCA de OLL 57 (fuente autoritativa) | `scripts/fixtures/wca-oll.json`, `docs/pdf-text/oll-algorithms.txt`, tabla leible en `docs/referencias/oll-zemdegs-klise.md` (14 familias, 57 casos, probabilidades 1/54, 1/108 y 1/216, con los huecos «Suggested algorithm here» que deja la plantilla) |
 | `gancube-3x3-cfop-tutorial.pdf` | Láminas GANCUBE: notación con dedos, F2L 01-18, OLL 01-57, PLL 01-21. Fuente de las transcripciones de `docs/fuentes.md` | `docs/pdf/gancube-page1.png`, teselas legibles `docs/pdf/gancube-tiles/` |
 | `Cube+Academy+Free+F2L.pdf` | Guía *Intuitive F2L* (CubeHead Comm.V): 41 casos con hueco objetivo y setup | **No se usa**: licencia de uso personal solo |
 
@@ -112,7 +154,12 @@ Licencias y material de terceros (decidido el 2026-10-31):
   marca tercera: se **sustituirán por diagramas SVG propios** generados con la convención del motor.
 - La guía de F2L de Cube Academy **no se usa** («licensed for personal use only»). El F2L se construye
   con GANCUBE, speedcube.quest y el motor.
-- Los tres PDF están en el repo **sin commitear**: solo se versionan los extractos y transcripciones.
+- Los tres PDF están en la carpeta del proyecto. Versionados están solo
+  `gancube-3x3-cfop-tutorial.pdf` y los tres textos extraídos en
+  `docs/pdf-text/`; `oll-algorithms.pdf` y `Cube+Academy+Free+F2L.pdf` están sin
+  commitear. La lámina de OLL se versiona como extracto estructurado
+  (`scripts/fixtures/wca-oll.json`) y como tabla leible
+  (`docs/referencias/oll-zemdegs-klise.md`).
 
 ## Camino restante
 
@@ -152,9 +199,13 @@ Dos limitaciones de `src/cube/engine.ts` están abiertas y explican la mayoría 
    `src/cube/caseUtils.ts` prueban las 24 rotaciones, se auto-comprueban con `isSolved` y **caen
    siempre al plantado crudo**, que es lo que muestra la ficha.
 2. **Convención de ciclos de cara en revisión.** Los prerequisitos canónicos (capa orientada,
-   permutación que solo toca la última capa) no dan verde en 38 fichas, mientras la permutación
-   declarada y el cierre del plantado sí cuadran en las 111. El diagnóstico medido: en los plantados
-   de la lámina oficial `f2lSolved()` da verde 0 de 48 veces, cuando debería darlo siempre.
+   permutación que solo toca la última capa) no dan verde en 37 fichas, mientras la permutación
+   declarada y el cierre del plantado sí cuadran en las 111. En la lámina oficial el plantado llega a
+   dejar las dos primeras capas resueltas **44 de 48** veces (medido con `npm run verify:wca`), y
+   `npm run verify:cube` lista **9 hechos del cubo real** que el motor no reproduce: las rotaciones
+   (`y = U E' D'`), `T-perm x2 = identidad`, el comportamiento del 338 con la cruz y la pareja F2L
+   sacada al hueco (cuatro hechos en el lado derecho y cuatro en el izquierdo). Los 22 hechos de
+   orden, inversos e identidades sí pasan.
 
 El work in progress del arreglo está en `src/cube/engine.ts` y `src/cube/caseUtils.ts` (giros de 1/2/3
 vueltas en un solo paso, sentido de `x`/`y`/`z`, `upFrame`, `canonicalByFrame`).
