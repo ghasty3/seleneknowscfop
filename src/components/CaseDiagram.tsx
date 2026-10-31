@@ -28,7 +28,7 @@ const CX = 1.5 * U // centro de la cara U
 const CY = 1.5 * U
 
 /** Pegatina lateral de la corona del diagrama PLL: más fina que una casilla. */
-const STRIP_T = 20
+const STRIP_T = 26
 const STRIP_GAP = 6
 const CROWN_OUT = 3 * U + STRIP_GAP + STRIP_T // borde exterior de la corona
 /** Anillos de las flechas: pegados a la corona, y separados entre sí para que las flechas de
@@ -42,25 +42,49 @@ const CENTER = '#3a3350' // centro de la cara (no informa)
 const ARROW = '#ffffff' // flechas blancas con contorno negro
 const HALO = '#000000' // contorno negro de las flechas
 
+/**
+ * Vista en red del cubo (la de cubedb, ruwix y Peety): la fila de abajo de la rejilla es la que
+ * toca a F, la de arriba es la fila de atrás, y la columna 0 es el lado L. Es la convención que
+ * hace que la cara U, las cuatro franjas laterales y las flechas hablen SIEMPRE de la misma pieza;
+ * con la vista cenital pura la franja de F quedaba pegada a la fila de atrás (todo espejado).
+ */
 function cellXY(pos: Pos) {
-  const { row, col } = uCell(pos)
-  return { x: col * U, y: row * U }
+  return { x: (pos[0] + 1) * U, y: (1 + pos[2]) * U }
+}
+
+/** Casilla de cada ranura de la última capa, en el orden de LL_CORNERS / LL_EDGES. */
+function cellRing(ring: Pos[]): Record<number, { x: number; y: number }> {
+  const out: Record<number, { x: number; y: number }> = {}
+  ring.forEach((p, i) => (out[i] = cellXY(p)))
+  return out
+}
+const CORNER_CELL = cellRing(LL_CORNERS)
+const EDGE_CELL = cellRing(LL_EDGES)
+
+/**
+ * Pegatina lateral que se pinta en la casilla de cada ranura: las esquinas miran a F o a B y las
+ * aristas a la suya. El orden es el de LL_CORNERS (UFR, UBR, UBL, UFL) y LL_EDGES (UF, UR, UB, UL),
+ * y cada celda es la que `gridToPos` asigna de verdad a esa posición en esa cara.
+ */
+export const SIDE_CORNER: [Face, number, number][] = [['F', 0, 2], ['B', 0, 0], ['B', 0, 2], ['F', 0, 0]]
+export const SIDE_EDGE: [Face, number, number][] = [['F', 0, 1], ['R', 0, 1], ['B', 0, 1], ['L', 0, 1]]
+
+/**
+ * Las 12 celdas de la corona (la fila pegada a cada una de las 4 caras), leídas en el orden en que
+ * el diagrama las dibuja: F y B de izquierda a derecha, L y R de arriba abajo (arriba = atrás).
+ * Exportado para que el audit compruebe en `gridToPos` que cada celda es la pegatina de la ranura
+ * que dice ser: así es como se detecta un espejo o una cara torcida sin abrir el navegador.
+ */
+export const CROWN_CELLS: Record<'F' | 'B' | 'L' | 'R', [number, number][]> = {
+  F: [0, 1, 2].map((c) => [0, c] as [number, number]),
+  B: [0, 1, 2].map((c) => [0, 2 - c] as [number, number]),
+  L: [0, 1, 2].map((r) => [0, 2 - r] as [number, number]),
+  R: [0, 1, 2].map((r) => [0, r] as [number, number]),
 }
 
 // Lectura cenital estándar (la capa U se mira con F hacia abajo):
 // fila 0 = fondo de la cara U, fila 2 = cerca del frente.
-const CORNER_CELL: Record<number, { x: number; y: number }> = {
-  0: { x: 0, y: 0 }, // UFR
-  1: { x: 2 * U, y: 0 }, // UBR
-  2: { x: 2 * U, y: 2 * U }, // UBL
-  3: { x: 0, y: 2 * U }, // UFL
-}
-const EDGE_CELL: Record<number, { x: number; y: number }> = {
-  0: { x: U, y: 0 }, // UF
-  1: { x: 2 * U, y: U }, // UR
-  2: { x: U, y: 2 * U }, // UB
-  3: { x: 0, y: U }, // UL
-}
+/* CORNER_CELL y EDGE_CELL se calculan ahora desde las propias LL_CORNERS/LL_EDGES (ver arriba). */
 
 /** Punta de flecha: triángulo relleno con el pico en (x,y) mirando según `ang`. */
 function arrowHead(x: number, y: number, ang: number, L = 9, W = 4.2): string {
@@ -131,28 +155,43 @@ export function CaseDiagram({
 }) {
   const m = mode === 'auto' ? 'auto' : mode
   const pll = m === 'pll'
+  const cPerm = pll ? permOf(state, LL_CORNERS) : null
+  const ePerm = pll ? permOf(state, LL_EDGES) : null
+  const cIdx = new Map(LL_CORNERS.map((p, i) => [p.join(), i]))
+  const eIdx = new Map(LL_EDGES.map((p, i) => [p.join(), i]))
 
   // --- rejilla 3x3 de la cara U ---
+  // Se recorre por POSICIONES (centro + las 8 piezas de la última capa), no por casillas sueltas:
+  // así cada casilla sale de la misma posición que usan las flechas, las franjas y el audit.
   const cells: { x: number; y: number; fill: string; rx: number }[] = []
-  for (let r = 0; r < 3; r++) {
-    for (let c = 0; c < 3; c++) {
-      const key = `${r}${c}`
-      let fill = DEAD
-      if (key === '11') fill = m === 'oll' || pll ? FACE_HEX.U : CENTER
-      else if (m === 'oll' && (key === '00' || key === '02' || key === '20' || key === '22')) {
-        const pos: Pos = key === '00' ? [1, 1, 1] : key === '02' ? [1, 1, -1] : key === '20' ? [-1, 1, 1] : [-1, 1, -1]
-        fill = llCornerOriented(state, pos) ? ORIENTED : UNORIENTED
-      } else if (m === 'oll' && (key === '01' || key === '10' || key === '12' || key === '21')) {
-        const pos: Pos = key === '01' ? [0, 1, 1] : key === '10' ? [-1, 1, 0] : key === '12' ? [1, 1, 0] : [0, 1, -1]
-        fill = llEdgeOriented(state, pos) ? FACE_HEX.U : UNORIENTED
-      } else if (pll) {
-        fill = ORIENTED
-      } else {
-        const color = faceletHome(state, 'U', r, c)
-        fill = COLORS[color] ?? DEAD
-      }
-      cells.push({ x: c * U, y: r * U, fill, rx: 8 })
+  const U9: Pos[] = [[0, 1, 0], ...LL_CORNERS, ...LL_EDGES]
+  for (const pos of U9) {
+    const { x, y } = cellXY(pos)
+    const ci = cIdx.get(pos.join())
+    const ei = eIdx.get(pos.join())
+    let fill: string
+    if (ci === undefined && ei === undefined) fill = m === 'oll' || pll ? FACE_HEX.U : CENTER
+    else if (m === 'oll')
+      fill = ci !== undefined
+        ? llCornerOriented(state, pos)
+          ? ORIENTED
+          : UNORIENTED
+        : llEdgeOriented(state, pos)
+          ? FACE_HEX.U
+          : UNORIENTED
+    else if (pll) {
+      // En un PLL la capa entera está orientada: el amarillo no informa nada. Se pinta con el
+      // color lateral la casilla de cada pieza que NO está en su sitio (como ruwix/Peety): en Ub
+      // salen las tres casillas rojas y en una T las cuatro esquinas, y se ve de un golpe qué
+      // piezas hay que mover.
+      fill = ORIENTED
+      const side = ci !== undefined && cPerm && cPerm[ci] !== ci ? SIDE_CORNER[ci] : ei !== undefined && ePerm && ePerm[ei] !== ei ? SIDE_EDGE[ei] : null
+      if (side) fill = COLORS[faceletHome(state, side[0], side[1], side[2])] ?? UNORIENTED
+    } else {
+      const u = uCell(pos)
+      fill = COLORS[faceletHome(state, 'U', u.row, u.col)] ?? DEAD
     }
+    cells.push({ x, y, fill, rx: 8 })
   }
 
   // --- corona de pegatinas laterales (PLL) / tira frontal (los demás modos) ---
@@ -165,10 +204,16 @@ export function CaseDiagram({
   // mostrar solo la tira de abajo dejaba la mitad de la información fuera del dibujo.
   const crown = pll || m === 'oll'
   if (crown) {
-    for (let c = 0; c < 3; c++) strips.push({ x: c * U, y: 3 * U + STRIP_GAP, w: S, h: STRIP_T, fill: COLORS[faceletHome(state, 'F', 0, c)] ?? DEAD, key: `f${c}` })
-    for (let c = 0; c < 3; c++) strips.push({ x: c * U, y: -(STRIP_GAP + STRIP_T), w: S, h: STRIP_T, fill: COLORS[faceletHome(state, 'B', 0, 2 - c)] ?? DEAD, key: `b${c}` })
-    for (let r = 0; r < 3; r++) strips.push({ x: -(STRIP_GAP + STRIP_T), y: r * U, w: STRIP_T, h: S, fill: COLORS[faceletHome(state, 'L', r, 0)] ?? DEAD, key: `l${r}` })
-    for (let r = 0; r < 3; r++) strips.push({ x: 3 * U + STRIP_GAP, y: r * U, w: STRIP_T, h: S, fill: COLORS[faceletHome(state, 'R', r, 0)] ?? DEAD, key: `r${r}` })
+    const CROWN_AT: Record<'F' | 'B' | 'L' | 'R', (i: number) => { x: number; y: number; w: number; h: number }> = {
+      F: (c) => ({ x: c * U, y: 3 * U + STRIP_GAP, w: S, h: STRIP_T }),
+      B: (c) => ({ x: c * U, y: -(STRIP_GAP + STRIP_T), w: S, h: STRIP_T }),
+      L: (r) => ({ x: -(STRIP_GAP + STRIP_T), y: r * U, w: STRIP_T, h: S }),
+      R: (r) => ({ x: 3 * U + STRIP_GAP, y: r * U, w: STRIP_T, h: S }),
+    }
+    for (const face of ['F', 'B', 'L', 'R'] as const)
+      CROWN_CELLS[face].forEach(([row, col], i) =>
+        strips.push({ ...CROWN_AT[face](i), fill: COLORS[faceletHome(state, face, row, col)] ?? DEAD, key: `${face.toLowerCase()}${i}` }),
+      )
   } else {
     const stripY = 3 * U
     for (let c = 0; c < 3; c++) {
@@ -179,18 +224,24 @@ export function CaseDiagram({
   }
 
   // --- flechas de permutación (PLL) ---
+  // Una flecha va de la casilla donde está la pieza a la casilla que le corresponde (la punta
+  // señala su casa). En los ciclos de 3 piezas salen las 3 flechas del ciclo; en un intercambio
+  // antípodo (dos parejas opuestas, como el perm H) sale UNA línea con punta en los dos extremos.
+  // El criterio de antípodas es geométrico y de involución: indices opuestos Y que la pieza
+  // regresa al índice de origen. Con solo `perm[i] === (i+2)%4` un ciclo de 3 (p. ej. Ub, donde
+  // pe[3]=1) se confundía con un swap y perdía una de sus tres flechas.
+  const antipodalSwap = (perm: number[], i: number) => perm[perm[i]] === i && perm[i] === (i + 2) % 4
   const arrows: { shaft: string; head: string; tail?: string }[] = []
   if (pll) {
+    const pc = cPerm!, pe = ePerm!
     const cornerPts = LL_CORNERS.map((_, i) => ({ x: CORNER_CELL[i].x + S / 2, y: CORNER_CELL[i].y + S / 2 }))
     const edgePts = LL_EDGES.map((_, i) => ({ x: EDGE_CELL[i].x + S / 2, y: EDGE_CELL[i].y + S / 2 }))
-    const cPerm = permOf(state, LL_CORNERS)
     for (let i = 0; i < 4; i++) {
-      const a = stickerArrow(i, cPerm[i], cornerPts, cPerm[i] === (i + 2) % 4)
+      const a = stickerArrow(i, pc[i], cornerPts, antipodalSwap(pc, i))
       if (a) arrows.push(a)
     }
-    const ePerm = permOf(state, LL_EDGES)
     for (let i = 0; i < 4; i++) {
-      const a = stickerArrow(i, ePerm[i], edgePts, ePerm[i] === (i + 2) % 4)
+      const a = stickerArrow(i, pe[i], edgePts, antipodalSwap(pe, i))
       if (a) arrows.push(a)
     }
   }

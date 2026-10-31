@@ -11,11 +11,13 @@
     "verify": "tsx scripts/verify.mts",
     "verify:wca": "tsx scripts/check-wca-oll.mts",
     "verify:verbose": "tsx scripts/verify.mts --verbose",
-    "test": "npm run typecheck && npm run verify && npm run verify:wca && npm run verify:refs && npm run verify:cube",
+    "test": "npm run typecheck && npm run verify && npm run verify:wca && npm run verify:images && npm run verify:refs && npm run verify:cube && npm run verify:diagrams",
     "docs": "tsx scripts/docs-casos.mts",
     "verify:refs": "tsx scripts/check-refs.mts",
     "verify:cube": "tsx scripts/check-cube-algebra.mts",
-    "svg": "tsx scripts/gen-case-svg.mts"
+    "verify:diagrams": "tsx scripts/check-diagrams.mts",
+    "svg": "tsx scripts/gen-case-svg.mts",
+    "verify:images": "tsx scripts/check-diagrams.mts"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.10",
