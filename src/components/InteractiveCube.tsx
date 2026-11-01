@@ -51,6 +51,46 @@ function stickerCenter(pos: [number, number, number], rot: number[], face: Face)
   return [pos[0] + n[0] * 0.5, pos[1] + n[1] * 0.5, pos[2] + n[2] * 0.5]
 }
 
+/**
+ * Del vector del dedo a la capa que lo sigue: cada pegatina solo puede irse en dos direcciones,
+ * se prueban sus dos capas con sus dos sentidos, se proyecta el recorrido **con la cámara viva**
+ * y gana el que mejor alinea con el dedo. Por eso el gesto sigue bien desde cualquier vista,
+ * también en el cubo espejado.
+ */
+export function dragMove(
+  state: CubeState,
+  index: number,
+  face: Face,
+  pos: [number, number, number],
+  dx: number,
+  dy: number,
+  cam: Cam,
+  mirrored: boolean,
+): { id: string; axis: Axis; layer: number; dir: 1 | -1; score: number } | null {
+  const cubie = state.cubies[index]
+  if (!cubie) return null
+  const from = stickerCenter(cubie.pos, cubie.rot, face)
+  const shoot = (p: [number, number, number]) => projCam(makeCamera(cam), p[0], p[1], p[2], mirrored)
+  const [ax, ay] = shoot(from)
+  const len = Math.hypot(dx, dy) || 1
+  let best: { id: string; axis: Axis; layer: number; dir: 1 | -1; score: number } | null = null
+  for (const axis of IN_PLANE[face]) {
+    for (const dir of [CW, CCW] as const) {
+      const cand = cloneState(state)
+      const mv: Move = { id: 'arrastre', axis, layers: [coord(axis, pos)], dir }
+      applyMove(cand, mv)
+      const c2 = cand.cubies[index]
+      const to = stickerCenter(c2.pos, c2.rot, face)
+      const [bx, by] = shoot(to)
+      const travel = Math.hypot(bx - ax, by - ay) || 1
+      const score = ((bx - ax) * dx + (by - ay) * dy) / (travel * len)
+      const layer = coord(axis, pos)
+      if (!best || score > best.score) best = { id: labelOf(axis, layer, dir), axis, layer, dir, score }
+    }
+  }
+  return best && best.score > 0.25 ? best : null
+}
+
 export interface InteractiveCubeProps {
   size?: number
   startState?: CubeState
@@ -194,31 +234,8 @@ export function InteractiveCube({
       const dy = e.clientY - d.y
       if (Math.hypot(dx, dy) < 16) return
       d.applied = true
-      const state = stRef.current
-      const cubie = state.cubies[d.index]
-      if (!cubie) return
-      const from = stickerCenter(cubie.pos, cubie.rot, d.face)
-      // Se proyecta con la cámara viva: el gesto tiene que seguir el dedo desde cualquier vista.
-      const shoot = (p: [number, number, number]) => projCam(makeCamera(camRef.current), p[0], p[1], p[2], mirrored)
-      let best: { mv: Move; score: number; id: string } | null = null
-      for (const axis of IN_PLANE[d.face]) {
-        for (const dir of [CW, CCW] as const) {
-          const cand = cloneState(state)
-          const mv: Move = { id: 'arrastre', axis, layers: [coord(axis, d.pos)], dir }
-          applyMove(cand, mv)
-          const c2 = cand.cubies[d.index]
-          const to = stickerCenter(c2.pos, c2.rot, d.face)
-          const [ax, ay] = shoot(from)
-          const [bx, by] = shoot(to)
-          const len = Math.hypot(bx - ax, by - ay) || 1
-          const score = ((bx - ax) * dx + (by - ay) * dy) / (len * Math.hypot(dx, dy))
-          if (!best || score > best.score) best = { mv, score, id: mv.id }
-        }
-      }
-      if (best && best.score > 0.25) {
-        const label = labelOf(best.mv.axis, coord(best.mv.axis, d.pos), best.mv.dir)
-        push([{ ...best.mv, id: label }], [label])
-      }
+      const pick = dragMove(stRef.current, d.index, d.face, d.pos, dx, dy, camRef.current, mirrored)
+      if (pick) push([{ id: pick.id, axis: pick.axis, layers: [pick.layer], dir: pick.dir }], [pick.id])
     }
     const up = () => {
       const d = drag.current

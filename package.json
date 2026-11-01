@@ -11,12 +11,13 @@
     "verify": "tsx scripts/verify.mts",
     "verify:wca": "tsx scripts/check-wca-oll.mts",
     "verify:verbose": "tsx scripts/verify.mts --verbose",
-    "test": "npm run typecheck && npm run verify && npm run verify:wca && npm run verify:refs && npm run verify:cube && npm run verify:diagrams && npm run verify:view",
+    "test": "npm run typecheck && npm run verify && npm run verify:wca && npm run verify:refs && npm run verify:cube && npm run verify:diagrams && npm run verify:view && npm run verify:gesture",
     "docs": "tsx scripts/docs-casos.mts",
     "verify:refs": "tsx scripts/check-refs.mts",
     "verify:cube": "tsx scripts/check-cube-algebra.mts",
     "verify:diagrams": "tsx scripts/check-diagrams.mts",
     "verify:view": "tsx scripts/check-cube-view.mts",
+    "verify:gesture": "tsx scripts/check-cube-gesture.mts",
     "svg": "tsx scripts/gen-case-svg.mts"
   },
   "dependencies": {

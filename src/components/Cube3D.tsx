@@ -19,7 +19,7 @@ const FOCAL = 5.6
 /** Ángulos con los que el cubo se dibuja por defecto (tres cuartos, visto desde arriba). */
 const YAW0 = (36 * Math.PI) / 180
 const PITCH0 = (27 * Math.PI) / 180
-const DIST0 = 10.5
+export const DIST0 = 10.5
 /** Luz de la mesa: desde arriba, algo hacia F y R. */
 const LIGHT: [number, number, number] = [0.42, 0.86, 0.58]
 
