@@ -209,9 +209,14 @@ export function CaseDiagram({
       R: (r) => ({ x: 3 * U + STRIP_GAP, y: r * U, w: STRIP_T, h: S }),
     }
     for (const face of ['F', 'B', 'L', 'R'] as const)
-      CROWN_CELLS[face].forEach(([row, col], i) =>
-        strips.push({ ...CROWN_AT[face](i), fill: COLORS[faceletHome(state, face, row, col)] ?? DEAD, key: `${face.toLowerCase()}${i}` }),
-      )
+      CROWN_CELLS[face].forEach(([row, col], i) => {
+        const color = faceletHome(state, face, row, col)
+        // En OLL las franjas laterales solo cuentan como «amarillo mirando a un lado».
+        // El resto de colores de las caras del frente, atrás, izquierda y derecha son las
+        // pegatinas de las capas de abajo: no informan de la orientación y ensucian el caso.
+        const fill = m === 'oll' && color !== 'U' ? UNORIENTED : COLORS[color] ?? DEAD
+        strips.push({ ...CROWN_AT[face](i), fill, key: `${face.toLowerCase()}${i}` })
+      })
   } else {
     const stripY = 3 * U
     for (let c = 0; c < 3; c++) {
