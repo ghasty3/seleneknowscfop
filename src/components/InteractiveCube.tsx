@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Cube3D, proj, stickerNormal } from './Cube3D'
+import { Cube3D, initialCam, makeCamera, projCam, stickerNormal, type Cam } from './Cube3D'
 import {
   algToString,
   applyMove,
@@ -88,6 +88,14 @@ export function InteractiveCube({
   const [done, setDone] = useState<{ ms: number; moves: number } | null>(null)
   const [lastMove, setLastMove] = useState<string>('')
   const [view, setView] = useState({ x: 0, y: 0, z: 0 }) // rotaciones de vista acumuladas
+  /**
+   * La cámara vive aquí, no dentro del visor: el arrastre de capas necesita proyectar con la
+   * MISMA cámara con la que se está dibujando, y si el ángulo viviera en `Cube3D` la proyección
+   * del gesto se calculría con un punto de vista distinto (la capa giraría hacia otro lado).
+   */
+  const [cam, setCam] = useState<Cam>(() => initialCam())
+  const camRef = useRef(cam)
+  camRef.current = cam
   const history = useRef<Move[][]>([])
   const drag = useRef<{ index: number; face: Face; pos: [number, number, number]; x: number; y: number; applied: boolean } | null>(null)
   const stRef = useRef(st)
@@ -190,6 +198,8 @@ export function InteractiveCube({
       const cubie = state.cubies[d.index]
       if (!cubie) return
       const from = stickerCenter(cubie.pos, cubie.rot, d.face)
+      // Se proyecta con la cámara viva: el gesto tiene que seguir el dedo desde cualquier vista.
+      const shoot = (p: [number, number, number]) => projCam(makeCamera(camRef.current), p[0], p[1], p[2], mirrored)
       let best: { mv: Move; score: number; id: string } | null = null
       for (const axis of IN_PLANE[d.face]) {
         for (const dir of [CW, CCW] as const) {
@@ -198,8 +208,8 @@ export function InteractiveCube({
           applyMove(cand, mv)
           const c2 = cand.cubies[d.index]
           const to = stickerCenter(c2.pos, c2.rot, d.face)
-          const [ax, ay] = proj(from[0], from[1], from[2], mirrored)
-          const [bx, by] = proj(to[0], to[1], to[2], mirrored)
+          const [ax, ay] = shoot(from)
+          const [bx, by] = shoot(to)
           const len = Math.hypot(bx - ax, by - ay) || 1
           const score = ((bx - ax) * dx + (by - ay) * dy) / (len * Math.hypot(dx, dy))
           if (!best || score > best.score) best = { mv, score, id: mv.id }
@@ -296,6 +306,9 @@ export function InteractiveCube({
             size={size}
             mirrored={mirrored}
             highlight={highlight}
+            cam={cam}
+            onCamChange={setCam}
+            controls
             onStickerDown={(info) => {
               drag.current = { index: info.index, face: info.face, pos: info.pos, x: info.x, y: info.y, applied: false }
             }}
@@ -362,8 +375,10 @@ export function InteractiveCube({
         </div>
       )}
       <p className="hint icube-hint">
-        Arrastra una pegatina para girar su capa, tócala para girar la cara entera, y arrastra el fondo para mover la
-        vista. Teclado: R U F B L D (con Mayúsculas = al revés), Backspace deshace, Esc reinicia.
+        Arrastra una pegatina para girar su capa, tócala para girar la cara entera, y arrastra el cubo por fuera de
+        las pegatinas (o el fondo) para girar la vista: rueda para acercar, doble clic o toque para volver. Vista en
+        memoria. Teclado: R U F B L D (con Mayúsculas = al revés), flechas mueven la vista, + - acercan, 0 vuelve,
+        Backspace deshace, Esc reinicia.
       </p>
     </div>
   )

@@ -645,6 +645,50 @@ table.rank td.time {
 .icube-pad { display: flex; flex-wrap: wrap; gap: 8px; }
 .pad-face { display: inline-flex; gap: 4px; }
 .pad-btn { min-width: 42px; padding: 8px 10px; font-family: var(--mono); }
+.cube3d {
+  display: block;
+  touch-action: pan-y;
+  cursor: grab;
+  border-radius: 12px;
+  outline: none;
+}
+
+/*
+ * En pantallas táctiles el gestual es dueño del cubo (órbita + arrastre de capa), así que se
+ * quita el scroll vertical dentro del visor. Se pone desde JS (`.touch`) porque en un escritorio
+ * de portátil dejar el `touch-action: none` de CSS restaría scroll a quien pasa por encima.
+ */
+.cube3d.touch {
+  touch-action: none;
+}
+
+.cube3d.dragging {
+  cursor: grabbing;
+}
+
+.cube3d.orbitable:focus-visible {
+  box-shadow: 0 0 0 2px rgba(var(--acc-rgb), 0.55);
+}
+
+.cube3d-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.cube3d-controls {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cube3d-controls .btn {
+  min-height: 0;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.74rem;
+}
+
 .icube-hint { max-width: 62ch; }
 
 /* ---- práctica ---- */
