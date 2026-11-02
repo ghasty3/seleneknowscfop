@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// base '/' porque el sitio se sirve en la URL de usuario: https://ghasty3.github.io/
+// (el repo tiene que llamarse ghasty3.github.io para eso). Si se sirve en la URL de
+// proyecto, la base pasa a '/nombre-del-repo/' y hay que hacer npm run build.
 export default defineConfig({
-  // Ruta base = el nombre del repo en GitHub Pages (ghasty3.github.io/seleneknowscfop/).
-  // Si se pone dominio propio, volver a '/' y hacer npm run build.
-  base: '/seleneknowscfop/',
+  base: '/',
   plugins: [react()],
   server: { port: 5173, host: true },
 })
