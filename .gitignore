@@ -16,11 +16,12 @@ npm-debug.log*
 coverage
 *.tsbuildinfo
 
-# Material de terceros con licencia restrictiva: los PDF originales no se versionan.
-# Solo se versionan los extractos que el proyecto necesita (ver README «Fuentes de los datos»).
+# Material de terceros con licencia restrictiva: los PDF originales y sus vuelcos de texto no se publican.
+# Quedan en la carpeta local del proyecto; lo que publica el repo son los JSON verificados por el motor
+# y los diagramas SVG propios (ver README «Fuentes de los datos»).
 /*.pdf
 docs/pdf/
-docs/pdf-text/*-f2l.txt
+docs/pdf-text/
 .impeccable/
 
 # Carpeta de trabajo temporal (capturas, probes, PDF extraído)

@@ -136,30 +136,32 @@ Herramientas: `scripts/verify.mts`, `scripts/check-wca-oll.mts`, `scripts/check-
 
 **La lámina oficial de OLL es la fuente autoritativa de OLL** (decisión de 2026-10-31): es
 `oll-algorithms.pdf`, «OLL Algorithms, Developed by Feliks Zemdegs and Andy Klise», la referencia
-canónica de la WCA. Está en el repo, es multi-columna (el texto plano no da orden legible) y se
-extrae con `scripts/extract-wca-oll.mjs` → `scripts/fixtures/wca-oll.json`: **57 casos, 128
-algoritmos, 0 faltan, 29 con alternativos, con probabilidad 1/x** y numeración WCA 1..57. La
-numeración GANCUBE 01..57 coincide con la WCA.
+canónica de la WCA. **No se versiona** (está en la carpeta del proyecto, fuera del repo): es
+multi-columna (el texto plano no da orden legible) y se extrae con `scripts/extract-wca-oll.mjs` →
+`scripts/fixtures/wca-oll.json`: **57 casos, 128 algoritmos, 0 faltan, 29 con alternativos, con
+probabilidad 1/x** y numeración WCA 1..57. La numeración GANCUBE 01..57 coincide con la WCA.
 
-| PDF del repo | Qué es | Extracto |
+| PDF (fuente local, fuera del repo) | Qué es | Extracto versionado |
 |---|---|---|
-| `oll-algorithms.pdf` | Lámina oficial WCA de OLL 57 (fuente autoritativa) | `scripts/fixtures/wca-oll.json`, `docs/pdf-text/oll-algorithms.txt`, tabla leible en `docs/referencias/oll-zemdegs-klise.md` (14 familias, 57 casos, probabilidades 1/54, 1/108 y 1/216, con los huecos «Suggested algorithm here» que deja la plantilla) |
-| `gancube-3x3-cfop-tutorial.pdf` | Láminas GANCUBE: notación con dedos, F2L 01-18, OLL 01-57, PLL 01-21. Fuente de las transcripciones de `docs/fuentes.md` | `docs/pdf/gancube-page1.png`, teselas legibles `docs/pdf/gancube-tiles/` |
+| `oll-algorithms.pdf` | Lámina oficial WCA de OLL 57 (fuente autoritativa) | `scripts/fixtures/wca-oll.json`; tabla leible en `docs/referencias/oll-zemdegs-klise.md` (14 familias, 57 casos, probabilidades 1/54, 1/108 y 1/216, con los huecos «Suggested algorithm here» que deja la plantilla) |
+| `gancube-3x3-cfop-tutorial.pdf` | Láminas GANCUBE: notación con dedos, F2L 01-18, OLL 01-57, PLL 01-21. Fuente de las transcripciones de `docs/fuentes.md` | nada: sus teselas (`docs/pdf/`) y su vuelco de texto (`docs/pdf-text/`) están fuera del repo |
 | `Cube+Academy+Free+F2L.pdf` | Guía *Intuitive F2L* (CubeHead Comm.V): 41 casos con hueco objetivo y setup | **No se usa**: licencia de uso personal solo |
 
-Licencias y material de terceros (decidido el 2026-10-31):
+Licencias y material de terceros (decidido el 2026-10-31, ampliado el 2026-11-02 al publicar el repo):
 
-- El sitio es **privado** (repo privado, GitHub Pages accesible solo para la persona).
+- El repo es **público** (`ghasty/seleneknowscfop`). Por decisión de la persona, **el material con
+  licencia restrictiva no se publica**: los PDF originales, su vuelco de texto en `docs/pdf-text/` y las
+  teselas renderizadas en `docs/pdf/` se **excluyen del historial** y se quedan en la carpeta local del
+  proyecto. `scripts/fixtures/wca-oll.json` (los 128 algoritmos de la lámina, como secuencias de letras,
+  que son estándar de la comunidad) y los diagramas SVG propios (`public/ref/`, generados por
+  `npm run svg` con el motor del proyecto) sí se publican.
 - Los **105 PNG de GANCUBE** (`public/ref/{oll,pll,notation}`) y las imágenes de casos son material de
   marca tercera: se **sustituirán por diagramas SVG propios** generados con la convención del motor.
 - La guía de F2L de Cube Academy **no se usa** («licensed for personal use only»). El F2L se construye
   con GANCUBE, speedcube.quest y el motor.
-- Los tres PDF están en la carpeta del proyecto. Versionados están solo
-  `gancube-3x3-cfop-tutorial.pdf` y los tres textos extraídos en
-  `docs/pdf-text/`; `oll-algorithms.pdf` y `Cube+Academy+Free+F2L.pdf` están sin
-  commitear. La lámina de OLL se versiona como extracto estructurado
-  (`scripts/fixtures/wca-oll.json`) y como tabla leible
-  (`docs/referencias/oll-zemdegs-klise.md`).
+- `docs/fuentes.md` conserva las transcripciones a mano de las láminas GANCUBE: son **notas de trabajo sin
+  verificar** (el propio archivo lo dice), no la fuente de lo que publica la web; lo que publica la web sale
+  de los JSON verificados por el motor.
 
 ## Camino restante
 
