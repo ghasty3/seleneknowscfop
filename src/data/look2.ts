@@ -50,4 +50,34 @@ export const LOOK2: CaseDef[] = [
     algs: ["R U2 R' U' R U' R'"],
     tips: ['Se reconoce porque la esquina orientada queda delante a la izquierda.'],
   },
+  // Casos de la tabla OLL que llegan con la cruz amarilla ya hecha: solo queda el paso
+  // de esquinas, así que son 2-Look de pleno. Los algoritmos son los verificados de la
+  // propia tabla OLL (src/data/oll.ts, códigos 22, 24 y 25), en su variante base.
+  {
+    code: '2L-6',
+    name: 'OLL 22 · cruz hecha',
+    expect: 'oll',
+    group: 'orientation de esquinas',
+    short: 'Llegas con la cruz hecha y las esquinas en W: se resuelve con el paso de esquinas.',
+    algs: ["R U2 R2 U' R2 U' R2 U2 R"],
+    tips: ['Es el «doble Sune»: las dos esquinas de la derecha se orientan con la misma mano.'],
+  },
+  {
+    code: '2L-7',
+    name: 'OLL 24 · cruz hecha',
+    expect: 'oll',
+    group: 'orientation de esquinas',
+    short: 'Cruz hecha y las dos esquinas torcidas mirando a la izquierda: sale con el paso de esquinas.',
+    algs: ["r U R' U' r' F R F'"],
+    tips: ['Con la cruz hecha es un «anti-Sune» con la arista interior.'],
+  },
+  {
+    code: '2L-8',
+    name: 'OLL 25 · cruz hecha',
+    expect: 'oll',
+    group: 'orientation de esquinas',
+    short: 'Cruz hecha y las dos esquinas torcidas mirando a la derecha: el espejo del anterior.',
+    algs: ["F' r U R' U' r' F R"],
+    tips: ['Mismo patrón que OLL 24, espejado: la arista interior cambia de lado.'],
+  },
 ]
