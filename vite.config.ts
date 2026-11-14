@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// base '/' porque el sitio se sirve en la URL de usuario: https://ghasty3.github.io/
-// (el repo tiene que llamarse ghasty3.github.io para eso). Si se sirve en la URL de
-// proyecto, la base pasa a '/nombre-del-repo/' y hay que hacer npm run build.
+// base = el nombre del repo, porque el sitio se sirve como URL de proyecto:
+// https://ghasty3.github.io/seleneknowscfop/ (decidido el 2026-11-14: el repo se queda
+// como seleneknowscfop). Si algún día se sirve en la raíz de la cuenta, la base vuelve a '/'.
 export default defineConfig({
-  base: '/',
+  base: '/seleneknowscfop/',
   plugins: [react()],
   server: { port: 5173, host: true },
 })
